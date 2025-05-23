@@ -10,7 +10,7 @@ class HomeViewController: UIViewController {
         static let cellSpacing: CGFloat = 20
         
         // Heights
-        static let featuredViewHeight: CGFloat = 200
+        static let featuredViewHeight: CGFloat = 300
         static let segmentContainerHeight: CGFloat = 50
         static let minimumCollectionViewHeight: CGFloat = 100
         static let cellAdditionalHeight: CGFloat = 60 // Title and other elements height in cell
@@ -91,7 +91,7 @@ class HomeViewController: UIViewController {
         let segmentedControl = UISegmentedControl(items: items)
         segmentedControl.translatesAutoresizingMaskIntoConstraints = false
         segmentedControl.selectedSegmentIndex = 0
-        segmentedControl.backgroundColor = .white
+        segmentedControl.backgroundColor = .systemBackground
         segmentedControl.selectedSegmentTintColor = UIColor(red: 95/255, green: 186/255, blue: 125/255, alpha: 1.0) // Green
         segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.darkGray], for: .normal)
         segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
@@ -108,12 +108,10 @@ class HomeViewController: UIViewController {
         layout.scrollDirection = .vertical
         layout.minimumLineSpacing = 20
         layout.minimumInteritemSpacing = 20
-        // 移除自动大小计算，使用固定大小
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .systemBackground
-        // 禁用 collectionView 的滚动，由外层 scrollView 处理滚动
         collectionView.isScrollEnabled = false
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -135,28 +133,24 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         
-        // 设置滚动视图代理
         scrollView.delegate = self
         
-        // 注册通知，当 MusicLibraryService 完成初始化时更新 UI
-        NotificationCenter.default.addObserver(self, 
+        NotificationCenter.default.addObserver(self,
                                                selector: #selector(musicLibraryDidLoad), 
                                                name: NSNotification.Name("MusicLibraryDidLoadNotification"), 
                                                object: nil)
         
-        // 初始加载数据
         loadData()
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // 每次视图出现时刷新数据
+
         loadData()
         updateMiniPlayerView()
     }
     
     @objc private func musicLibraryDidLoad() {
-        // 当音乐库加载完成时刷新 UI
         DispatchQueue.main.async { [weak self] in
             self?.loadData()
         }
@@ -214,7 +208,7 @@ class HomeViewController: UIViewController {
             featuredImageView.topAnchor.constraint(equalTo: featuredView.topAnchor),
             featuredImageView.leadingAnchor.constraint(equalTo: featuredView.leadingAnchor),
             featuredImageView.trailingAnchor.constraint(equalTo: featuredView.trailingAnchor),
-            featuredImageView.bottomAnchor.constraint(equalTo: featuredView.bottomAnchor),
+            featuredImageView.bottomAnchor.constraint(equalTo: featuredView.bottomAnchor, constant: -LayoutMetrics.standardMargin),
             
             // Featured title label
             featuredTitleLabel.leadingAnchor.constraint(equalTo: featuredView.leadingAnchor, constant: 16),
@@ -223,7 +217,7 @@ class HomeViewController: UIViewController {
             
             // Featured artist label
             featuredArtistLabel.leadingAnchor.constraint(equalTo: featuredView.leadingAnchor, constant: 16),
-            featuredArtistLabel.bottomAnchor.constraint(equalTo: featuredView.bottomAnchor, constant: -16),
+            featuredArtistLabel.bottomAnchor.constraint(equalTo: featuredView.bottomAnchor, constant: -16-LayoutMetrics.standardMargin),
             featuredArtistLabel.trailingAnchor.constraint(equalTo: featuredView.trailingAnchor, constant: -16),
             
             // Segment container view

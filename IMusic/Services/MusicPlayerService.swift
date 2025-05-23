@@ -1,6 +1,7 @@
 import Foundation
 import AVFoundation
 import MediaPlayer
+import UIKit
 
 enum PlaybackState {
     case stopped
@@ -8,12 +9,6 @@ enum PlaybackState {
     case paused
     case loading
 }
-
-//enum RepeatMode {
-//    case none
-//    case one
-//    case all
-//}
 
 class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
     private var player: AVAudioPlayer?
@@ -255,6 +250,7 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         
         // Get the full path for the item
         let fullPath = musicLibrary.getFullPath(for: item.filePath)
+        print("Attempting to play file at path: \(fullPath.path)")
         
         // Check if file exists
         guard FileManager.default.fileExists(atPath: fullPath.path) else {
@@ -262,7 +258,11 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
             return
         }
         
+        // Ensure audio session is active
+        setupAudioSession()
+        
         do {
+            print("Creating AVAudioPlayer with file at: \(fullPath.path)")
             player = try AVAudioPlayer(contentsOf: fullPath)
             player?.delegate = self
             player?.volume = volume
@@ -272,6 +272,7 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
             currentItem = item
             if let player = player {
                 duration = player.duration
+                print("Audio duration: \(duration) seconds")
             }
             
             // Start playback
@@ -321,8 +322,9 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         do {
             try audioSession.setCategory(.playback, mode: .default)
             try audioSession.setActive(true)
+            print("Audio session setup successfully")
         } catch {
-            print("Failed to set up audio session: \(error)")
+            print("Failed to set up audio session: \(error.localizedDescription)")
         }
     }
     
@@ -392,10 +394,22 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         
         // Update the now playing info
         MPNowPlayingInfoCenter.default().nowPlayingInfo = nowPlayingInfo
+        
+        print("Updated now playing info for: \(currentItem.title)")
     }
     
     private func handlePlaybackError(_ error: Error) {
         print("Playback error: \(error.localizedDescription)")
+        
+        // Log additional error details if available
+        if let nsError = error as NSError? {
+            print("Error domain: \(nsError.domain), code: \(nsError.code)")
+            if let failureReason = nsError.localizedFailureReason {
+                print("Failure reason: \(failureReason)")
+            }
+        }
+        
+        // Stop playback and reset player state
         stop()
     }
     
@@ -450,6 +464,7 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
     
     // MARK: - AVAudioPlayerDelegate Implementation
     func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        print("AVAudioPlayer finished playing, success: \(flag)")
         if flag {
             switch repeatMode {
             case .none:
@@ -469,6 +484,7 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
     
     func audioPlayerDecodeErrorDidOccur(_ player: AVAudioPlayer, error: Error?) {
         if let error = error {
+            print("AVAudioPlayer decode error: \(error.localizedDescription)")
             handlePlaybackError(error)
         }
     }
