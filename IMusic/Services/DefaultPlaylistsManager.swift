@@ -34,8 +34,8 @@ class DefaultPlaylistsManager {
     // Relax category
     private static let meditationPlaylist = "冥想放松"
     private static let naturePlaylist = "自然之声"
-    private static let goodbyeSongsPlaylist = "告别歌曲"
-    private static let shapeSongsPlaylist = "形状歌曲"
+    private static let goodbyeSongsPlaylist = "离别歌曲"
+    private static let shapeSongsPlaylist = "认知歌曲"
     
     // Focus category
     private static let studyPlaylist = "学习专注"

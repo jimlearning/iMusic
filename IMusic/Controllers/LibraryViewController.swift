@@ -271,7 +271,7 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
                 confirmAction: {
                     Task {
                         do {
-                            try await self.musicLibraryService.deleteMusic(item)
+                            try await self.musicLibraryService.deleteMusic(item, musicPlayerService: self.musicPlayerService)
                             
                             await MainActor.run {
                                 if self.isFiltering {

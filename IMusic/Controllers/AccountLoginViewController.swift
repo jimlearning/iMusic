@@ -90,7 +90,7 @@ class AccountLoginViewController: UIViewController {
         stackView.translatesAutoresizingMaskIntoConstraints = false
         stackView.axis = .horizontal
         stackView.distribution = .fillEqually
-        stackView.spacing = 20
+        stackView.spacing = 80
         return stackView
     }()
     
@@ -187,7 +187,6 @@ class AccountLoginViewController: UIViewController {
             // Social buttons stack view
             socialButtonsStackView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
             socialButtonsStackView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            socialButtonsStackView.widthAnchor.constraint(equalToConstant: 150),
             socialButtonsStackView.heightAnchor.constraint(equalToConstant: 50),
             
             // Social buttons

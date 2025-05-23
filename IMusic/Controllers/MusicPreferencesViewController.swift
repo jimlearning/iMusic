@@ -8,6 +8,20 @@ class MusicPreferencesViewController: UIViewController {
     private var selectedGenres: [String] = []
     
     // MARK: - UI Components
+    private lazy var scrollView: UIScrollView = {
+        let scrollView = UIScrollView()
+        scrollView.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.showsVerticalScrollIndicator = true
+        scrollView.alwaysBounceVertical = true
+        return scrollView
+    }()
+    
+    private lazy var contentView: UIView = {
+        let view = UIView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        return view
+    }()
+    
     private lazy var skipButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -60,24 +74,42 @@ class MusicPreferencesViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .systemBackground
         
+        // Add scroll view and content view
         view.addSubview(skipButton)
         view.addSubview(titleLabel)
-        view.addSubview(genreStackView)
+        view.addSubview(scrollView)
+        scrollView.addSubview(contentView)
+        contentView.addSubview(genreStackView)
         view.addSubview(confirmButton)
         
         NSLayoutConstraint.activate([
             skipButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
             skipButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 40),
+            titleLabel.topAnchor.constraint(equalTo: skipButton.bottomAnchor, constant: 40),
             titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
             titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             
-            genreStackView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
-            genreStackView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
-            genreStackView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            // Scroll view constraints
+            scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 40),
+            scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: confirmButton.topAnchor, constant: -20),
             
-            confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -30),
+            // Content view constraints - same width as scroll view but dynamic height
+            contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
+            contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
+            contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
+            contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            
+            // Genre stack view constraints
+            genreStackView.topAnchor.constraint(equalTo: contentView.topAnchor),
+            genreStackView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 20),
+            genreStackView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -20),
+            genreStackView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            
+            confirmButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
             confirmButton.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             confirmButton.widthAnchor.constraint(equalToConstant: 300),
             confirmButton.heightAnchor.constraint(equalToConstant: 50)

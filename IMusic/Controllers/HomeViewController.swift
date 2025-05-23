@@ -145,6 +145,7 @@ class HomeViewController: UIViewController, MiniPlayerUpdatable {
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
+        setupNavigationBar()
         
         scrollView.delegate = self
         
@@ -315,6 +316,12 @@ class HomeViewController: UIViewController, MiniPlayerUpdatable {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(featuredViewTapped))
         featuredView.addGestureRecognizer(tapGesture)
+    }
+
+    private func setupNavigationBar() {
+        title = "主页"
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     // MARK: - Data Loading

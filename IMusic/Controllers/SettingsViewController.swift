@@ -32,13 +32,13 @@ class SettingsViewController: UIViewController, MiniPlayerUpdatable {
     enum Section: Int, CaseIterable {
         case playback
         case library
-        case about
+        case logout
         
         var title: String {
             switch self {
             case .playback: return "Playback"
             case .library: return "Library"
-            case .about: return "About"
+            case .logout: return "Logout"
             }
         }
     }
@@ -63,14 +63,12 @@ class SettingsViewController: UIViewController, MiniPlayerUpdatable {
         case sortBy
         case clearCache
         case recreatePlaylists
-        case logout
         
         var title: String {
             switch self {
             case .sortBy: return "Sort By"
             case .clearCache: return "Clear Cache"
             case .recreatePlaylists: return "Recreate All Playlists"
-            case .logout: return "Logout"
             }
         }
     }
@@ -278,6 +276,9 @@ private func logout() {
         title: "Logout",
         message: "Are you sure you want to logout?",
         confirmAction: {
+            // Stop music playback
+            self.musicPlayerService.stop()
+            
             // Clear user login status
             UserDefaults.standard.set(false, forKey: "com.imusic.userLoggedIn")
             
@@ -316,7 +317,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         switch sectionType {
         case .playback: return PlaybackRow.allCases.count
         case .library: return LibraryRow.allCases.count
-        case .about: return AboutRow.allCases.count
+        case .logout: return 1
         }
     }
     
@@ -400,37 +401,13 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 cell.textLabel?.text = rowType.title
                 cell.textLabel?.textColor = .systemBlue
                 return cell
-                
-            case .logout:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
-                cell.textLabel?.text = rowType.title
-                cell.textLabel?.textColor = .systemRed
-                return cell
             }
             
-        case .about:
-            guard let rowType = AboutRow(rawValue: indexPath.row) else {
-                return UITableViewCell()
-            }
-            
+        case .logout:
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
-            cell.textLabel?.text = rowType.title
-            cell.textLabel?.textColor = .label
-            
-            switch rowType {
-            case .version:
-                if let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
-                   let build = Bundle.main.infoDictionary?["CFBundleVersion"] as? String {
-                    cell.detailTextLabel?.text = "\(version) (\(build))"
-                } else {
-                    cell.detailTextLabel?.text = "1.0"
-                }
-                cell.selectionStyle = .none
-                
-            case .feedback:
-                cell.accessoryType = .disclosureIndicator
-            }
-            
+            cell.textLabel?.text = sectionType.title
+            cell.textLabel?.textColor = .systemRed
+            cell.accessoryType = .none
             return cell
         }
     }
@@ -470,24 +447,10 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 
             case .recreatePlaylists:
                 recreatePlaylists()
-                
-            case .logout:
-                logout()
             }
             
-        case .about:
-            guard let rowType = AboutRow(rawValue: indexPath.row) else { return }
-            
-            switch rowType {
-            case .version:
-                break
-                
-            case .feedback:
-                // Open feedback email or form
-                if let url = URL(string: "mailto:support@imusic.com?subject=IMusic%20Feedback") {
-                    UIApplication.shared.open(url)
-                }
-            }
+        case .logout:
+            logout()
         }
     }
     

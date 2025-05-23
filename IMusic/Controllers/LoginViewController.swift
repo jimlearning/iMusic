@@ -171,7 +171,7 @@ class LoginViewController: UIViewController {
             passwordLoginButton.heightAnchor.constraint(equalToConstant: 50),
             
             // Terms container
-            termsContainer.topAnchor.constraint(equalTo: passwordLoginButton.bottomAnchor, constant: 30),
+            termsContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -40),
             termsContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             termsContainer.heightAnchor.constraint(equalToConstant: 30),
             

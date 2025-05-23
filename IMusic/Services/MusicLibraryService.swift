@@ -102,9 +102,16 @@ class MusicLibraryService: ObservableObject {
         }
     }
     
-    func deleteMusic(_ item: MusicItem) async throws {
+    func deleteMusic(_ item: MusicItem, musicPlayerService: MusicPlayerService? = nil) async throws {
         await setLoading(true)
         defer { Task { await self.setLoading(false) } }
+        
+        // Check if the item being deleted is currently playing
+        if let playerService = musicPlayerService, let currentItem = playerService.currentItem, currentItem.id == item.id {
+            print("Currently playing item is being deleted, switching to next track")
+            // If the current item is being deleted, play the next track in the queue
+            playerService.playNext()
+        }
         
         // Delete the file
         let fullPath = getFullPath(for: item.filePath)
