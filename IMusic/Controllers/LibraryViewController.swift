@@ -251,7 +251,7 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.deselectRow(at: indexPath, animated: true)
         
         let items = isFiltering ? filteredMusicItems : musicItems
-        let selectedItem = items[indexPath.row]
+        _ = items[indexPath.row]
         
         musicPlayerService.setQueue(items, startIndex: indexPath.row)
         musicPlayerService.play()

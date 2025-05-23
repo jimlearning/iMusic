@@ -30,7 +30,16 @@ class LocalDataProvider: DataProvider {
     
     func getPlaylists() async throws -> [PlaylistItem] {
         if let data = userDefaults.data(forKey: playlistsKey) {
-            return try JSONDecoder().decode([PlaylistItem].self, from: data)
+            do {
+                let decoder = JSONDecoder()
+                return try decoder.decode([PlaylistItem].self, from: data)
+            } catch {
+                print("Error decoding playlists: \(error)")
+                // If there's an error with the existing data, return an empty array
+                // and clear the corrupted data
+                userDefaults.removeObject(forKey: playlistsKey)
+                return []
+            }
         }
         return []
     }
@@ -41,8 +50,22 @@ class LocalDataProvider: DataProvider {
     }
     
     func savePlaylists(_ playlists: [PlaylistItem]) async throws {
-        let data = try JSONEncoder().encode(playlists)
-        userDefaults.set(data, forKey: playlistsKey)
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(playlists)
+            userDefaults.set(data, forKey: playlistsKey)
+            print("Successfully saved \(playlists.count) playlists to UserDefaults")
+            
+            // Verify data can be decoded
+            if let savedData = userDefaults.data(forKey: playlistsKey) {
+                let decoder = JSONDecoder()
+                let decodedPlaylists = try decoder.decode([PlaylistItem].self, from: savedData)
+                print("Verification successful: Decoded \(decodedPlaylists.count) playlists")
+            }
+        } catch {
+            print("Error in savePlaylists: \(error)")
+            throw error
+        }
     }
     
     func deleteMusic(_ item: MusicItem) async throws {

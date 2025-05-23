@@ -16,8 +16,21 @@ class MusicLibraryService: ObservableObject {
         self.documentDirectory = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first!
         
         Task {
+            print("MusicLibraryService initialization started")
+            // First initialize default playlists, then load all data
+            await initializeDefaultPlaylists()
             await loadData()
+            print("MusicLibraryService initialization completed with \(playlists.count) playlists and \(musicItems.count) music items")
+            
+            // 发送通知，告知数据加载完成
+            NotificationCenter.default.post(name: NSNotification.Name("MusicLibraryDidLoadNotification"), object: nil)
         }
+    }
+    
+    // Initialize default category playlists if they don't exist
+    private func initializeDefaultPlaylists() async {
+        // Create default playlists from bundled resources
+        await DefaultPlaylistsManager.createDefaultPlaylists(musicLibraryService: self)
     }
     
     // MARK: - Public Methods

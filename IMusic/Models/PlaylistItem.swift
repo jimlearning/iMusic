@@ -1,10 +1,16 @@
 import Foundation
 
 struct PlaylistItem: Codable, Identifiable, Equatable {
+    // Define coding keys to ensure consistent encoding/decoding
+    private enum CodingKeys: String, CodingKey {
+        case id, name, description, musicItems, dateCreated, category
+    }
     let id: UUID
     var name: String
+    var description: String
     var musicItems: [MusicItem]
     let dateCreated: Date
+    var category: String
     
     var count: Int {
         return musicItems.count
@@ -31,10 +37,12 @@ struct PlaylistItem: Codable, Identifiable, Equatable {
         return lhs.id == rhs.id
     }
     
-    init(id: UUID = UUID(), name: String, musicItems: [MusicItem] = [], dateCreated: Date = Date()) {
+    init(id: UUID = UUID(), name: String, description: String = "", musicItems: [MusicItem] = [], dateCreated: Date = Date(), category: String = "") {
         self.id = id
         self.name = name
+        self.description = description
         self.musicItems = musicItems
         self.dateCreated = dateCreated
+        self.category = category
     }
 }

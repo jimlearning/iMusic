@@ -206,7 +206,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
-        let selectedItem = searchResults[indexPath.row]
+        _ = searchResults[indexPath.row]
         
         musicPlayerService.setQueue(searchResults, startIndex: indexPath.row)
         musicPlayerService.play()

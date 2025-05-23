@@ -28,6 +28,20 @@ extension UIImage {
     static let settingsIcon = UIImage(systemName: "gear")!
 }
 
+extension UIImage {
+    convenience init(color: UIColor, size: CGSize = CGSize(width: 1, height: 1), cornerRadius: CGFloat = 0) {
+        let rect = CGRect(origin: .zero, size: size)
+        UIGraphicsBeginImageContextWithOptions(size, false, 0)
+        let context = UIGraphicsGetCurrentContext()!
+        let path = UIBezierPath(roundedRect: rect, cornerRadius: cornerRadius)
+        context.setFillColor(color.cgColor)
+        path.fill()
+        let image = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext()
+        self.init(cgImage: image.cgImage!)
+    }
+}
+
 // MARK: - TimeInterval Extensions
 extension TimeInterval {
     func formatAsPlaybackTime() -> String {

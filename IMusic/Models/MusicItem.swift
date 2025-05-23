@@ -2,6 +2,10 @@ import Foundation
 import UIKit
 
 struct MusicItem: Codable, Identifiable, Equatable {
+    // Define coding keys to ensure consistent encoding/decoding
+    private enum CodingKeys: String, CodingKey {
+        case id, title, artist, album, duration, filePath, artworkData, dateAdded
+    }
     let id: UUID
     let title: String
     let artist: String?

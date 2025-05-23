@@ -17,9 +17,23 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Create window with the scene
         window = UIWindow(windowScene: windowScene)
         
-        // Set the root view controller to our main tab bar controller
-        window?.rootViewController = MainTabBarController()
+        // Check if user is already logged in
+        if isUserLoggedIn() {
+            // User is logged in, go directly to main interface with TabBar
+            let mainTabBarController = MainTabBarController()
+            window?.rootViewController = mainTabBarController
+        } else {
+            // User is not logged in, show login screen
+            window?.rootViewController = LoginViewController()
+        }
+        
         window?.makeKeyAndVisible()
+    }
+    
+    // Helper method to check if user is logged in
+    private func isUserLoggedIn() -> Bool {
+        // Check UserDefaults for login status
+        return UserDefaults.standard.bool(forKey: "com.imusic.userLoggedIn")
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {
