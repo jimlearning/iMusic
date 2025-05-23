@@ -2,6 +2,9 @@ import UIKit
 
 class AccountLoginViewController: UIViewController {
     
+    let defaultUsername = "1234567890"
+    let defaultPassword = "ABCDEFGHIJKLMN"
+    
     // MARK: - UI Components
     
     private lazy var backButton: UIButton = {
@@ -117,6 +120,10 @@ class AccountLoginViewController: UIViewController {
         
         // Hide navigation bar
         navigationController?.setNavigationBarHidden(true, animated: false)
+        
+        // Set default account and password
+        usernameTextField.text = defaultUsername
+        passwordTextField.text = defaultPassword
     }
     
     // MARK: - UI Setup
@@ -185,25 +192,6 @@ class AccountLoginViewController: UIViewController {
             
             appleButton.widthAnchor.constraint(equalToConstant: 50),
             appleButton.heightAnchor.constraint(equalToConstant: 50)
-        ])
-        
-        // Add bottom indicator
-        addBottomIndicator()
-    }
-    
-    private func addBottomIndicator() {
-        let indicator = UIView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        indicator.backgroundColor = .black
-        indicator.layer.cornerRadius = 2
-        
-        view.addSubview(indicator)
-        
-        NSLayoutConstraint.activate([
-            indicator.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -10),
-            indicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            indicator.widthAnchor.constraint(equalToConstant: 40),
-            indicator.heightAnchor.constraint(equalToConstant: 4)
         ])
     }
     

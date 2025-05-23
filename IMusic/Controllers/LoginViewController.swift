@@ -186,25 +186,6 @@ class LoginViewController: UIViewController {
             termsLabel.centerYAnchor.constraint(equalTo: termsContainer.centerYAnchor),
             termsLabel.trailingAnchor.constraint(equalTo: termsContainer.trailingAnchor)
         ])
-        
-        // Add bottom indicator
-        addBottomIndicator()
-    }
-    
-    private func addBottomIndicator() {
-        let indicator = UIView()
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        indicator.backgroundColor = .black
-        indicator.layer.cornerRadius = 2
-        
-        view.addSubview(indicator)
-        
-        NSLayoutConstraint.activate([
-            indicator.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20),
-            indicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            indicator.widthAnchor.constraint(equalToConstant: 40),
-            indicator.heightAnchor.constraint(equalToConstant: 4)
-        ])
     }
     
     // MARK: - Actions

@@ -60,36 +60,35 @@
 		386956B02DDF47B4008CA057 /* 野人-孟维来.flac in Resources */ = {isa = PBXBuildFile; fileRef = 386956AE2DDF47B4008CA057 /* 野人-孟维来.flac */; };
 		386956DC2DE02CDA008CA057 /* A Sailor Went To Sea314.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B22DE02CD3008CA057 /* A Sailor Went To Sea314.mp3 */; };
 		386956DD2DE02CDA008CA057 /* The Bath Song508.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B32DE02CD3008CA057 /* The Bath Song508.mp3 */; };
-		386956DE2DE02CDA008CA057 /* How Many Fingers_381.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B42DE02CD3008CA057 /* How Many Fingers_381.mp3 */; };
+		386956DE2DE02CDA008CA057 /* How Many Fingers 381.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B42DE02CD3008CA057 /* How Many Fingers 381.mp3 */; };
 		386956DF2DE02CDA008CA057 /* Jingle Bells 729.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B52DE02CD3008CA057 /* Jingle Bells 729.mp3 */; };
 		386956E02DE02CDA008CA057 /* What Do You Want For Christmas590.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B62DE02CD4008CA057 /* What Do You Want For Christmas590.mp3 */; };
 		386956E12DE02CDA008CA057 /* Brush Your Teeth341.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B72DE02CD4008CA057 /* Brush Your Teeth341.mp3 */; };
 		386956E22DE02CDA008CA057 /* Hello Hello504.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B82DE02CD4008CA057 /* Hello Hello504.mp3 */; };
-		386956E32DE02CDA008CA057 /* Seven Steps _424.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B92DE02CD5008CA057 /* Seven Steps _424.mp3 */; };
+		386956E32DE02CDA008CA057 /* Seven Steps 424.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956B92DE02CD5008CA057 /* Seven Steps 424.mp3 */; };
 		386956E42DE02CDA008CA057 /* Walking Walking 420.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956BA2DE02CD5008CA057 /* Walking Walking 420.mp3 */; };
 		386956E52DE02CDA008CA057 /* The Jellyfish.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956BB2DE02CD5008CA057 /* The Jellyfish.mp3 */; };
 		386956E62DE02CDA008CA057 /* My Teddy Bear573.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956BC2DE02CD5008CA057 /* My Teddy Bear573.mp3 */; };
 		386956E72DE02CDA008CA057 /* Little Robin Redbreast 354.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956BD2DE02CD5008CA057 /* Little Robin Redbreast 354.mp3 */; };
 		386956E82DE02CDA008CA057 /* Here Is The Beehive142.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956BE2DE02CD5008CA057 /* Here Is The Beehive142.mp3 */; };
-		386956E92DE02CDA008CA057 /* Goodbye, My Friends458.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956BF2DE02CD5008CA057 /* Goodbye, My Friends458.mp3 */; };
-		386956EA2DE02CDA008CA057 /* Pat-A-Cake 264.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C02DE02CD5008CA057 /* Pat-A-Cake 264.mp3 */; };
+		386956E92DE02CDA008CA057 /* Goodbye My Friends 458.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956BF2DE02CD5008CA057 /* Goodbye My Friends 458.mp3 */; };
+		386956EA2DE02CDA008CA057 /* Pat A Cake 264.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C02DE02CD5008CA057 /* Pat A Cake 264.mp3 */; };
 		386956EB2DE02CDA008CA057 /* Bye Bye Goodbye 449.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C12DE02CD6008CA057 /* Bye Bye Goodbye 449.mp3 */; };
-		386956EC2DE02CDA008CA057 /* Yes, I Can! 566.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C22DE02CD6008CA057 /* Yes, I Can! 566.mp3 */; };
+		386956EC2DE02CDA008CA057 /* Yes, I Can 566.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C22DE02CD6008CA057 /* Yes, I Can 566.mp3 */; };
 		386956ED2DE02CDA008CA057 /* Days Of The 413.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C32DE02CD6008CA057 /* Days Of The 413.mp3 */; };
 		386956EE2DE02CDA008CA057 /* Clean Up Song 455.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C42DE02CD6008CA057 /* Clean Up Song 455.mp3 */; };
 		386956EF2DE02CDA008CA057 /* Put On Your Shoes 629.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C52DE02CD6008CA057 /* Put On Your Shoes 629.mp3 */; };
 		386956F02DE02CDA008CA057 /* Who Took The Candy623.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C62DE02CD7008CA057 /* Who Took The Candy623.mp3 */; };
-		386956F12DE02CDA008CA057 /* Uh-huh! 453.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C72DE02CD7008CA057 /* Uh-huh! 453.mp3 */; };
+		386956F12DE02CDA008CA057 /* Uh huh 453.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C72DE02CD7008CA057 /* Uh huh 453.mp3 */; };
 		386956F22DE02CDA008CA057 /* Are You Hungry.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C82DE02CD7008CA057 /* Are You Hungry.mp3 */; };
 		386956F32DE02CDA008CA057 /* Baby Shark369.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956C92DE02CD7008CA057 /* Baby Shark369.mp3 */; };
 		386956F42DE02CDA008CA057 /* I See Something Pink682.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956CA2DE02CD7008CA057 /* I See Something Pink682.mp3 */; };
 		386956F52DE02CDA008CA057 /* 10 Little Buses 203.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956CB2DE02CD7008CA057 /* 10 Little Buses 203.mp3 */; };
 		386956F62DE02CDA008CA057 /* One Little Finger 700.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956CC2DE02CD7008CA057 /* One Little Finger 700.mp3 */; };
 		386956F72DE02CDA008CA057 /* Down By The Bay208.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956CD2DE02CD8008CA057 /* Down By The Bay208.mp3 */; };
-		386956F82DE02CDA008CA057 /* Say Cheese!499.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956CE2DE02CD8008CA057 /* Say Cheese!499.mp3 */; };
+		386956F82DE02CDA008CA057 /* Say Cheese 499.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956CE2DE02CD8008CA057 /* Say Cheese 499.mp3 */; };
 		386956F92DE02CDA008CA057 /* Hide And Seek402.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956CF2DE02CD8008CA057 /* Hide And Seek402.mp3 */; };
 		386956FA2DE02CDA008CA057 /* The Wheels On The Bus46.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D02DE02CD8008CA057 /* The Wheels On The Bus46.mp3 */; };
-		386956FB2DE02CDA008CA057 /* Take Me Out To The Ball Game275.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D12DE02CD8008CA057 /* Take Me Out To The Ball Game275.mp3 */; };
 		386956FC2DE02CDA008CA057 /* BINGO 757.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D22DE02CD8008CA057 /* BINGO 757.mp3 */; };
 		386956FD2DE02CDA008CA057 /* Row Row Row Your Boat 764.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D32DE02CD9008CA057 /* Row Row Row Your Boat 764.mp3 */; };
 		386956FE2DE02CDA008CA057 /* Five Little Ducks 390.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D42DE02CD9008CA057 /* Five Little Ducks 390.mp3 */; };
@@ -97,7 +96,7 @@
 		386957002DE02CDA008CA057 /* Go Away 652.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D62DE02CD9008CA057 /* Go Away 652.mp3 */; };
 		386957012DE02CDA008CA057 /* I Like You325.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D72DE02CD9008CA057 /* I Like You325.mp3 */; };
 		386957022DE02CDA008CA057 /* Count Down 582.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D82DE02CD9008CA057 /* Count Down 582.mp3 */; };
-		386957032DE02CDA008CA057 /* Red Light, Green Light150.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D92DE02CD9008CA057 /* Red Light, Green Light150.mp3 */; };
+		386957032DE02CDA008CA057 /* Red Light Green Light 150.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D92DE02CD9008CA057 /* Red Light Green Light 150.mp3 */; };
 		386957042DE02CDA008CA057 /* This Is The Way 405.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956DA2DE02CDA008CA057 /* This Is The Way 405.mp3 */; };
 		386957062DE082AE008CA057 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386957052DE082AE008CA057 /* GradientView.swift */; };
 /* End PBXBuildFile section */
@@ -158,36 +157,35 @@
 		386956AE2DDF47B4008CA057 /* 野人-孟维来.flac */ = {isa = PBXFileReference; lastKnownFileType = file; path = "野人-孟维来.flac"; sourceTree = "<group>"; };
 		386956B22DE02CD3008CA057 /* A Sailor Went To Sea314.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "A Sailor Went To Sea314.mp3"; sourceTree = "<group>"; };
 		386956B32DE02CD3008CA057 /* The Bath Song508.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Bath Song508.mp3"; sourceTree = "<group>"; };
-		386956B42DE02CD3008CA057 /* How Many Fingers_381.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "How Many Fingers_381.mp3"; sourceTree = "<group>"; };
+		386956B42DE02CD3008CA057 /* How Many Fingers 381.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "How Many Fingers 381.mp3"; sourceTree = "<group>"; };
 		386956B52DE02CD3008CA057 /* Jingle Bells 729.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Jingle Bells 729.mp3"; sourceTree = "<group>"; };
 		386956B62DE02CD4008CA057 /* What Do You Want For Christmas590.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "What Do You Want For Christmas590.mp3"; sourceTree = "<group>"; };
 		386956B72DE02CD4008CA057 /* Brush Your Teeth341.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Brush Your Teeth341.mp3"; sourceTree = "<group>"; };
 		386956B82DE02CD4008CA057 /* Hello Hello504.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Hello Hello504.mp3"; sourceTree = "<group>"; };
-		386956B92DE02CD5008CA057 /* Seven Steps _424.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Seven Steps _424.mp3"; sourceTree = "<group>"; };
+		386956B92DE02CD5008CA057 /* Seven Steps 424.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Seven Steps 424.mp3"; sourceTree = "<group>"; };
 		386956BA2DE02CD5008CA057 /* Walking Walking 420.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Walking Walking 420.mp3"; sourceTree = "<group>"; };
 		386956BB2DE02CD5008CA057 /* The Jellyfish.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Jellyfish.mp3"; sourceTree = "<group>"; };
 		386956BC2DE02CD5008CA057 /* My Teddy Bear573.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "My Teddy Bear573.mp3"; sourceTree = "<group>"; };
 		386956BD2DE02CD5008CA057 /* Little Robin Redbreast 354.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Little Robin Redbreast 354.mp3"; sourceTree = "<group>"; };
 		386956BE2DE02CD5008CA057 /* Here Is The Beehive142.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Here Is The Beehive142.mp3"; sourceTree = "<group>"; };
-		386956BF2DE02CD5008CA057 /* Goodbye, My Friends458.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Goodbye, My Friends458.mp3"; sourceTree = "<group>"; };
-		386956C02DE02CD5008CA057 /* Pat-A-Cake 264.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Pat-A-Cake 264.mp3"; sourceTree = "<group>"; };
+		386956BF2DE02CD5008CA057 /* Goodbye My Friends 458.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Goodbye My Friends 458.mp3"; sourceTree = "<group>"; };
+		386956C02DE02CD5008CA057 /* Pat A Cake 264.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Pat A Cake 264.mp3"; sourceTree = "<group>"; };
 		386956C12DE02CD6008CA057 /* Bye Bye Goodbye 449.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Bye Bye Goodbye 449.mp3"; sourceTree = "<group>"; };
-		386956C22DE02CD6008CA057 /* Yes, I Can! 566.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Yes, I Can! 566.mp3"; sourceTree = "<group>"; };
+		386956C22DE02CD6008CA057 /* Yes, I Can 566.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Yes, I Can 566.mp3"; sourceTree = "<group>"; };
 		386956C32DE02CD6008CA057 /* Days Of The 413.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Days Of The 413.mp3"; sourceTree = "<group>"; };
 		386956C42DE02CD6008CA057 /* Clean Up Song 455.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Clean Up Song 455.mp3"; sourceTree = "<group>"; };
 		386956C52DE02CD6008CA057 /* Put On Your Shoes 629.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Put On Your Shoes 629.mp3"; sourceTree = "<group>"; };
 		386956C62DE02CD7008CA057 /* Who Took The Candy623.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Who Took The Candy623.mp3"; sourceTree = "<group>"; };
-		386956C72DE02CD7008CA057 /* Uh-huh! 453.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Uh-huh! 453.mp3"; sourceTree = "<group>"; };
+		386956C72DE02CD7008CA057 /* Uh huh 453.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Uh huh 453.mp3"; sourceTree = "<group>"; };
 		386956C82DE02CD7008CA057 /* Are You Hungry.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Are You Hungry.mp3"; sourceTree = "<group>"; };
 		386956C92DE02CD7008CA057 /* Baby Shark369.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Baby Shark369.mp3"; sourceTree = "<group>"; };
 		386956CA2DE02CD7008CA057 /* I See Something Pink682.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "I See Something Pink682.mp3"; sourceTree = "<group>"; };
 		386956CB2DE02CD7008CA057 /* 10 Little Buses 203.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "10 Little Buses 203.mp3"; sourceTree = "<group>"; };
 		386956CC2DE02CD7008CA057 /* One Little Finger 700.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "One Little Finger 700.mp3"; sourceTree = "<group>"; };
 		386956CD2DE02CD8008CA057 /* Down By The Bay208.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Down By The Bay208.mp3"; sourceTree = "<group>"; };
-		386956CE2DE02CD8008CA057 /* Say Cheese!499.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Say Cheese!499.mp3"; sourceTree = "<group>"; };
+		386956CE2DE02CD8008CA057 /* Say Cheese 499.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Say Cheese 499.mp3"; sourceTree = "<group>"; };
 		386956CF2DE02CD8008CA057 /* Hide And Seek402.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Hide And Seek402.mp3"; sourceTree = "<group>"; };
 		386956D02DE02CD8008CA057 /* The Wheels On The Bus46.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Wheels On The Bus46.mp3"; sourceTree = "<group>"; };
-		386956D12DE02CD8008CA057 /* Take Me Out To The Ball Game275.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Take Me Out To The Ball Game275.mp3"; sourceTree = "<group>"; };
 		386956D22DE02CD8008CA057 /* BINGO 757.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "BINGO 757.mp3"; sourceTree = "<group>"; };
 		386956D32DE02CD9008CA057 /* Row Row Row Your Boat 764.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Row Row Row Your Boat 764.mp3"; sourceTree = "<group>"; };
 		386956D42DE02CD9008CA057 /* Five Little Ducks 390.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Five Little Ducks 390.mp3"; sourceTree = "<group>"; };
@@ -195,7 +193,7 @@
 		386956D62DE02CD9008CA057 /* Go Away 652.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Go Away 652.mp3"; sourceTree = "<group>"; };
 		386956D72DE02CD9008CA057 /* I Like You325.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "I Like You325.mp3"; sourceTree = "<group>"; };
 		386956D82DE02CD9008CA057 /* Count Down 582.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Count Down 582.mp3"; sourceTree = "<group>"; };
-		386956D92DE02CD9008CA057 /* Red Light, Green Light150.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Red Light, Green Light150.mp3"; sourceTree = "<group>"; };
+		386956D92DE02CD9008CA057 /* Red Light Green Light 150.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Red Light Green Light 150.mp3"; sourceTree = "<group>"; };
 		386956DA2DE02CDA008CA057 /* This Is The Way 405.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "This Is The Way 405.mp3"; sourceTree = "<group>"; };
 		386957052DE082AE008CA057 /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -345,33 +343,32 @@
 				386956D42DE02CD9008CA057 /* Five Little Ducks 390.mp3 */,
 				386956D52DE02CD9008CA057 /* Follow Me 233.mp3 */,
 				386956D62DE02CD9008CA057 /* Go Away 652.mp3 */,
-				386956BF2DE02CD5008CA057 /* Goodbye, My Friends458.mp3 */,
+				386956BF2DE02CD5008CA057 /* Goodbye My Friends 458.mp3 */,
 				386956B82DE02CD4008CA057 /* Hello Hello504.mp3 */,
 				386956BE2DE02CD5008CA057 /* Here Is The Beehive142.mp3 */,
 				386956CF2DE02CD8008CA057 /* Hide And Seek402.mp3 */,
-				386956B42DE02CD3008CA057 /* How Many Fingers_381.mp3 */,
+				386956B42DE02CD3008CA057 /* How Many Fingers 381.mp3 */,
 				386956D72DE02CD9008CA057 /* I Like You325.mp3 */,
 				386956CA2DE02CD7008CA057 /* I See Something Pink682.mp3 */,
 				386956B52DE02CD3008CA057 /* Jingle Bells 729.mp3 */,
 				386956BD2DE02CD5008CA057 /* Little Robin Redbreast 354.mp3 */,
 				386956BC2DE02CD5008CA057 /* My Teddy Bear573.mp3 */,
 				386956CC2DE02CD7008CA057 /* One Little Finger 700.mp3 */,
-				386956C02DE02CD5008CA057 /* Pat-A-Cake 264.mp3 */,
+				386956C02DE02CD5008CA057 /* Pat A Cake 264.mp3 */,
 				386956C52DE02CD6008CA057 /* Put On Your Shoes 629.mp3 */,
-				386956D92DE02CD9008CA057 /* Red Light, Green Light150.mp3 */,
+				386956D92DE02CD9008CA057 /* Red Light Green Light 150.mp3 */,
 				386956D32DE02CD9008CA057 /* Row Row Row Your Boat 764.mp3 */,
-				386956CE2DE02CD8008CA057 /* Say Cheese!499.mp3 */,
-				386956B92DE02CD5008CA057 /* Seven Steps _424.mp3 */,
-				386956D12DE02CD8008CA057 /* Take Me Out To The Ball Game275.mp3 */,
+				386956CE2DE02CD8008CA057 /* Say Cheese 499.mp3 */,
+				386956B92DE02CD5008CA057 /* Seven Steps 424.mp3 */,
 				386956B32DE02CD3008CA057 /* The Bath Song508.mp3 */,
 				386956BB2DE02CD5008CA057 /* The Jellyfish.mp3 */,
 				386956D02DE02CD8008CA057 /* The Wheels On The Bus46.mp3 */,
 				386956DA2DE02CDA008CA057 /* This Is The Way 405.mp3 */,
-				386956C72DE02CD7008CA057 /* Uh-huh! 453.mp3 */,
+				386956C72DE02CD7008CA057 /* Uh huh 453.mp3 */,
 				386956BA2DE02CD5008CA057 /* Walking Walking 420.mp3 */,
 				386956B62DE02CD4008CA057 /* What Do You Want For Christmas590.mp3 */,
 				386956C62DE02CD7008CA057 /* Who Took The Candy623.mp3 */,
-				386956C22DE02CD6008CA057 /* Yes, I Can! 566.mp3 */,
+				386956C22DE02CD6008CA057 /* Yes, I Can 566.mp3 */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -437,7 +434,7 @@
 				386956DD2DE02CDA008CA057 /* The Bath Song508.mp3 in Resources */,
 				386956E62DE02CDA008CA057 /* My Teddy Bear573.mp3 in Resources */,
 				386956AF2DDF47B4008CA057 /* 平凡之路-朴树.mp3 in Resources */,
-				386956F12DE02CDA008CA057 /* Uh-huh! 453.mp3 in Resources */,
+				386956F12DE02CDA008CA057 /* Uh huh 453.mp3 in Resources */,
 				386956A72DDF458A008CA057 /* 十年-陈奕迅.flac in Resources */,
 				386956A62DDF458A008CA057 /* 天地龙鳞-王力宏.mp3 in Resources */,
 				386956F52DE02CDA008CA057 /* 10 Little Buses 203.mp3 in Resources */,
@@ -453,15 +450,14 @@
 				386956DC2DE02CDA008CA057 /* A Sailor Went To Sea314.mp3 in Resources */,
 				386956F02DE02CDA008CA057 /* Who Took The Candy623.mp3 in Resources */,
 				386956FC2DE02CDA008CA057 /* BINGO 757.mp3 in Resources */,
-				386956FB2DE02CDA008CA057 /* Take Me Out To The Ball Game275.mp3 in Resources */,
 				386957022DE02CDA008CA057 /* Count Down 582.mp3 in Resources */,
-				386956F82DE02CDA008CA057 /* Say Cheese!499.mp3 in Resources */,
+				386956F82DE02CDA008CA057 /* Say Cheese 499.mp3 in Resources */,
 				386956A52DDF458A008CA057 /* 四个女生-心愿.flac in Resources */,
 				386956F22DE02CDA008CA057 /* Are You Hungry.mp3 in Resources */,
 				386956A32DDF458A008CA057 /* 青花瓷-周杰伦.flac in Resources */,
-				386957032DE02CDA008CA057 /* Red Light, Green Light150.mp3 in Resources */,
+				386957032DE02CDA008CA057 /* Red Light Green Light 150.mp3 in Resources */,
 				386956922DDF401E008CA057 /* 御龙吟-姚贝娜.mp3 in Resources */,
-				386956E32DE02CDA008CA057 /* Seven Steps _424.mp3 in Resources */,
+				386956E32DE02CDA008CA057 /* Seven Steps 424.mp3 in Resources */,
 				386956942DDF401E008CA057 /* Happy Day–宇珩.flac in Resources */,
 				386957002DE02CDA008CA057 /* Go Away 652.mp3 in Resources */,
 				386956EF2DE02CDA008CA057 /* Put On Your Shoes 629.mp3 in Resources */,
@@ -469,9 +465,9 @@
 				386956AA2DDF458A008CA057 /* 笑傲江湖曲-胡伟立.mp3 in Resources */,
 				386956F32DE02CDA008CA057 /* Baby Shark369.mp3 in Resources */,
 				386956E22DE02CDA008CA057 /* Hello Hello504.mp3 in Resources */,
-				386956DE2DE02CDA008CA057 /* How Many Fingers_381.mp3 in Resources */,
+				386956DE2DE02CDA008CA057 /* How Many Fingers 381.mp3 in Resources */,
 				386956932DDF401E008CA057 /* Imagine Dragons–Natural.flac in Resources */,
-				386956EC2DE02CDA008CA057 /* Yes, I Can! 566.mp3 in Resources */,
+				386956EC2DE02CDA008CA057 /* Yes, I Can 566.mp3 in Resources */,
 				386956EE2DE02CDA008CA057 /* Clean Up Song 455.mp3 in Resources */,
 				386956EB2DE02CDA008CA057 /* Bye Bye Goodbye 449.mp3 in Resources */,
 				386956DF2DE02CDA008CA057 /* Jingle Bells 729.mp3 in Resources */,
@@ -479,7 +475,7 @@
 				386956FA2DE02CDA008CA057 /* The Wheels On The Bus46.mp3 in Resources */,
 				386956F62DE02CDA008CA057 /* One Little Finger 700.mp3 in Resources */,
 				386957042DE02CDA008CA057 /* This Is The Way 405.mp3 in Resources */,
-				386956E92DE02CDA008CA057 /* Goodbye, My Friends458.mp3 in Resources */,
+				386956E92DE02CDA008CA057 /* Goodbye My Friends 458.mp3 in Resources */,
 				386956ED2DE02CDA008CA057 /* Days Of The 413.mp3 in Resources */,
 				386956FD2DE02CDA008CA057 /* Row Row Row Your Boat 764.mp3 in Resources */,
 				386956A22DDF458A008CA057 /* 人间烟火-程响.flac in Resources */,
@@ -487,7 +483,7 @@
 				386956FF2DE02CDA008CA057 /* Follow Me 233.mp3 in Resources */,
 				386956E02DE02CDA008CA057 /* What Do You Want For Christmas590.mp3 in Resources */,
 				386956472DDEE24D008CA057 /* Base in Resources */,
-				386956EA2DE02CDA008CA057 /* Pat-A-Cake 264.mp3 in Resources */,
+				386956EA2DE02CDA008CA057 /* Pat A Cake 264.mp3 in Resources */,
 				386956F92DE02CDA008CA057 /* Hide And Seek402.mp3 in Resources */,
 				386956F72DE02CDA008CA057 /* Down By The Bay208.mp3 in Resources */,
 				386956E42DE02CDA008CA057 /* Walking Walking 420.mp3 in Resources */,
