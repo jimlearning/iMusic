@@ -113,8 +113,10 @@ class PlaylistCollectionViewCell: UICollectionViewCell {
             
             if let artworkData = firstItem.artworkData, let image = UIImage(data: artworkData) {
                 imageView.image = image
+                imageView.contentMode = .scaleAspectFill
             } else {
                 setupDefaultImage()
+                imageView.contentMode = .scaleAspectFit
             }
         } else {
             artistLabel.text = "Various Artists"
@@ -123,7 +125,12 @@ class PlaylistCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupDefaultImage() {
-        imageView.backgroundColor = imageView.associatedRandomColor()
+        if let playlistName = titleLabel.text, !playlistName.isEmpty {
+            imageView.backgroundColor = colorBasedOnString(playlistName)
+        } else {
+            imageView.backgroundColor = randomPredefinedColor()
+        }
+        
         imageView.image = UIImage(systemName: "music.note")?.withRenderingMode(.alwaysTemplate)
         imageView.tintColor = .white
     }

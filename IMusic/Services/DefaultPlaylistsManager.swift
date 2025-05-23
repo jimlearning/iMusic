@@ -4,6 +4,9 @@ import AVFoundation
 // This class handles the creation and management of default playlists
 class DefaultPlaylistsManager {
     
+    // Notification name for metadata update completion
+    static let metadataUpdateCompletedNotification = Notification.Name("com.imusic.metadataUpdateCompleted")
+    
     // Keys to track playlist creation status
     private static let defaultPlaylistsCreatedKey = "com.imusic.defaultPlaylistsCreated"
     private static let playlistVersionKey = "com.imusic.playlistVersion"
@@ -130,15 +133,14 @@ class DefaultPlaylistsManager {
     
     private static let shapeSongsMusic = [
         "The Shape Song #1.mp3",
-        "The Shape Song #1518.mp3",
-        "The Shape Song #2 531.mp3",
+        "The Shape Song #2.mp3",
+        "The Shape Song #3.mp3",
         "I See Something Pink682.mp3",
     ]
     
     // Focus category
     private static let studyMusic = [
         "平凡之路-朴树.mp3",
-        "天地龙鳞-王力宏.mp3",
         "This Is The Way 405.mp3",
         "Walking Walking 420.mp3",
     ]
@@ -350,21 +352,28 @@ class DefaultPlaylistsManager {
         print("Default playlists creation completed and marked as done (version \(currentPlaylistVersion))")
     }
     
-    // Get or create music items in a simpler way
+    // Get or create music items in a simpler way - optimized for fast loading
     private static func getMusicItems(musicLibraryService: MusicLibraryService) async -> [MusicItem] {
         // First check if we already have music items in the library
         do {
             let existingItems = try await musicLibraryService.dataProvider.getAllMusic()
             if !existingItems.isEmpty {
                 print("Found \(existingItems.count) existing music items")
+                
+                // Start a background task to update metadata if needed
+                let itemsCopy = existingItems // Create a local copy to avoid capture of mutable variable
+                Task {
+                    await updateMusicItemsMetadata(items: itemsCopy, musicLibraryService: musicLibraryService)
+                }
+                
                 return existingItems
             }
         } catch {
             print("Error checking existing music items: \(error.localizedDescription)")
         }
         
-        // If no existing items, try to create music items from resource files
-        print("Creating music items from resources")
+        // If no existing items, quickly create basic music items first
+        print("Creating basic music items for fast display")
         var musicItems: [MusicItem] = []
         
         // Combine all music files from all playlists
@@ -373,20 +382,64 @@ class DefaultPlaylistsManager {
                           meditationMusic + natureMusic + goodbyeSongsMusic + shapeSongsMusic +
                           studyMusic + workoutMusic + alphabetMusic + countingMusic
         
-        // Try to find music files in the app bundle
-        let fileManager = FileManager.default
-        let bundleURL = Bundle.main.resourceURL!
-        
+        // Create basic music items with minimal information for fast loading
         for musicFile in allMusicFiles {
             let fileName = URL(fileURLWithPath: musicFile).lastPathComponent
             let fileNameWithoutExt = URL(fileURLWithPath: musicFile).deletingPathExtension().lastPathComponent
+            
+            // Create a basic music item with just the essential information
+            let musicItem = MusicItem(
+                id: UUID(),
+                title: fileNameWithoutExt,
+                artist: "Loading...",
+                album: "Loading...",
+                duration: 180.0, // Default 3 minutes
+                filePath: fileName,
+                artworkData: nil
+            )
+            
+            musicItems.append(musicItem)
+        }
+        
+        // Save the basic music items
+        do {
+            try await musicLibraryService.dataProvider.saveMusic(musicItems)
+            print("Saved \(musicItems.count) basic music items")
+            
+            // Start a background task to load detailed metadata
+            let itemsCopy = musicItems // Create a local copy to avoid capture of mutable variable
+            Task {
+                await updateMusicItemsMetadata(items: itemsCopy, musicLibraryService: musicLibraryService)
+            }
+            
+        } catch {
+            print("Error saving basic music items: \(error.localizedDescription)")
+        }
+        
+        return musicItems
+    }
+    
+    // Update music items with detailed metadata in background
+    private static func updateMusicItemsMetadata(items: [MusicItem], musicLibraryService: MusicLibraryService) async {
+        print("Starting background metadata update for \(items.count) items")
+        let fileManager = FileManager.default
+        var updatedItems: [MusicItem] = []
+        
+        for item in items {
+            // Skip items that already have complete metadata
+            if item.artist != "Loading..." && item.artist != "Unknown Artist" && item.artworkData != nil {
+                continue
+            }
+            
+            let fileName = item.filePath
+            let fileNameWithoutExt = URL(fileURLWithPath: fileName).deletingPathExtension().lastPathComponent
             
             // Check if file exists in bundle
             var fileURL: URL? = nil
             let possibleExtensions = ["mp3", "m4a", "wav", "aac", "flac"]
             
             // Try to find the file with the exact name
-            if let url = Bundle.main.url(forResource: fileNameWithoutExt, withExtension: URL(fileURLWithPath: musicFile).pathExtension) {
+            if let url = Bundle.main.url(forResource: fileNameWithoutExt, withExtension: URL(fileURLWithPath: fileName).pathExtension) {
                 fileURL = url
             } else {
                 // Try different extensions if exact match not found
@@ -416,9 +469,9 @@ class DefaultPlaylistsManager {
                     let asset = AVAsset(url: destinationURL)
                     let metadata = try await extractMetadata(from: asset)
                     
-                    // Create music item with extracted metadata
-                    let musicItem = MusicItem(
-                        id: UUID(),
+                    // Create updated music item with extracted metadata
+                    let updatedItem = MusicItem(
+                        id: item.id, // Keep the same ID
                         title: metadata.title ?? fileNameWithoutExt,
                         artist: metadata.artist ?? "Unknown Artist",
                         album: metadata.album ?? "Unknown Album",
@@ -427,49 +480,122 @@ class DefaultPlaylistsManager {
                         artworkData: metadata.artworkData
                     )
                     
-                    musicItems.append(musicItem)
+                    updatedItems.append(updatedItem)
                 } catch {
                     print("Error extracting metadata from \(fileName): \(error.localizedDescription)")
                     
                     // Create a basic music item if metadata extraction fails
-                    let musicItem = MusicItem(
-                        id: UUID(),
-                        title: fileNameWithoutExt,
+                    let updatedItem = MusicItem(
+                        id: item.id, // Keep the same ID
+                        title: item.title,
                         artist: "Unknown Artist",
                         album: "Unknown Album",
-                        duration: 180.0, // Default 3 minutes
+                        duration: 180.0,
                         filePath: fileName,
                         artworkData: nil
                     )
                     
-                    musicItems.append(musicItem)
+                    updatedItems.append(updatedItem)
                 }
             } else {
-                // Create a placeholder music item if file not found
-                print("File not found in bundle: \(musicFile)")
-                let musicItem = MusicItem(
-                    id: UUID(),
-                    title: fileNameWithoutExt,
+                // Update with basic info if file not found
+                let updatedItem = MusicItem(
+                    id: item.id, // Keep the same ID
+                    title: item.title,
                     artist: "Unknown Artist",
                     album: "Unknown Album",
-                    duration: 180.0, // Default 3 minutes
-                    filePath: fileName,
+                    duration: 180.0,
+                    filePath: item.filePath,
                     artworkData: nil
                 )
                 
-                musicItems.append(musicItem)
+                updatedItems.append(updatedItem)
             }
         }
         
-        // Save the music items
-        do {
-            try await musicLibraryService.dataProvider.saveMusic(musicItems)
-            print("Saved \(musicItems.count) music items")
-        } catch {
-            print("Error saving music items: \(error.localizedDescription)")
+        // If we have updated items, save them
+        if !updatedItems.isEmpty {
+            do {
+                // Get all current music items
+                let allItems = try await musicLibraryService.dataProvider.getAllMusic()
+                
+                // Create a new array with updated items replacing old ones
+                var newItems: [MusicItem] = []
+                for item in allItems {
+                    if let updatedIndex = updatedItems.firstIndex(where: { $0.id == item.id }) {
+                        newItems.append(updatedItems[updatedIndex])
+                    } else {
+                        newItems.append(item)
+                    }
+                }
+                
+                // Save the updated items
+                try await musicLibraryService.dataProvider.saveMusic(newItems)
+                print("Updated \(updatedItems.count) music items with detailed metadata")
+                
+                // Update playlists to use the new items
+                await updatePlaylistsWithNewItems(updatedItems: updatedItems, musicLibraryService: musicLibraryService)
+                
+            } catch {
+                print("Error saving updated music items: \(error.localizedDescription)")
+            }
         }
-        
-        return musicItems
+    }
+    
+    // Update playlists with the new items
+    private static func updatePlaylistsWithNewItems(updatedItems: [MusicItem], musicLibraryService: MusicLibraryService) async {
+        do {
+            // Get all playlists
+            let playlists = try await musicLibraryService.dataProvider.getPlaylists()
+            var updatedPlaylists: [PlaylistItem] = []
+            var playlistsChanged = false
+            
+            // Update each playlist
+            for playlist in playlists {
+                var newMusicItems = playlist.musicItems
+                var playlistChanged = false
+                
+                // Replace items with updated versions
+                for (index, item) in playlist.musicItems.enumerated() {
+                    if let updatedItem = updatedItems.first(where: { $0.id == item.id }) {
+                        newMusicItems[index] = updatedItem
+                        playlistChanged = true
+                    }
+                }
+                
+                if playlistChanged {
+                    let updatedPlaylist = PlaylistItem(
+                        id: playlist.id,
+                        name: playlist.name,
+                        description: playlist.description,
+                        musicItems: newMusicItems,
+                        dateCreated: playlist.dateCreated,
+                        category: playlist.category
+                    )
+                    updatedPlaylists.append(updatedPlaylist)
+                    playlistsChanged = true
+                } else {
+                    updatedPlaylists.append(playlist)
+                }
+            }
+            
+            // Save updated playlists if any changed
+            if playlistsChanged {
+                try await musicLibraryService.dataProvider.savePlaylists(updatedPlaylists)
+                print("Updated playlists with new music item metadata")
+                
+                // Update in-memory playlists
+                let finalPlaylists = updatedPlaylists // Create a local copy to avoid capture of mutable variable
+                await MainActor.run {
+                    musicLibraryService.playlists = finalPlaylists
+                    
+                    // Post notification that metadata update is completed
+                    NotificationCenter.default.post(name: metadataUpdateCompletedNotification, object: nil)
+                }
+            }
+        } catch {
+            print("Error updating playlists with new items: \(error.localizedDescription)")
+        }
     }
 
     // Create a category playlist with the given name, category and music items

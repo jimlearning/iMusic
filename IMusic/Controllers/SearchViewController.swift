@@ -1,6 +1,6 @@
 import UIKit
 
-class SearchViewController: UIViewController {
+class SearchViewController: UIViewController, MiniPlayerUpdatable {
     
     // MARK: - Properties
     var musicLibraryService: MusicLibraryService!
@@ -168,7 +168,7 @@ class SearchViewController: UIViewController {
         }
     }
     
-    private func updateMiniPlayerView() {
+    func updateMiniPlayerView() {
         if let currentItem = musicPlayerService.currentItem {
             miniPlayerView.configure(with: currentItem, playbackState: musicPlayerService.playbackState)
             miniPlayerView.isHidden = false

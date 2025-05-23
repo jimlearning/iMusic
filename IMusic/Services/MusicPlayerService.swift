@@ -11,6 +11,8 @@ enum PlaybackState {
 }
 
 class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
+    // Notification name for track change
+    static let trackChangedNotification = Notification.Name("com.imusic.trackChanged")
     private var player: AVAudioPlayer?
     private var audioSession: AVAudioSession
     private let musicLibrary: MusicLibraryService
@@ -252,34 +254,39 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         let fullPath = musicLibrary.getFullPath(for: item.filePath)
         print("Attempting to play file at path: \(fullPath.path)")
         
-        // Check if file exists
-        guard FileManager.default.fileExists(atPath: fullPath.path) else {
-            print("File does not exist at path: \(fullPath.path)")
-            return
-        }
-        
-        // Ensure audio session is active
-        setupAudioSession()
-        
         do {
-            print("Creating AVAudioPlayer with file at: \(fullPath.path)")
+            // Ensure audio session is active
+            try audioSession.setActive(true)
+            
             player = try AVAudioPlayer(contentsOf: fullPath)
             player?.delegate = self
             player?.volume = volume
             player?.prepareToPlay()
             
-            // Update current item and duration
+            // Set current item and start playing
             currentItem = item
-            if let player = player {
-                duration = player.duration
-                print("Audio duration: \(duration) seconds")
-            }
+            duration = player?.duration ?? 0
+            currentTime = 0
+            progress = 0
             
-            // Start playback
-            play()
+            player?.play()
+            playbackState = .playing
             
-            // Update now playing info for lock screen
+            // Start timer to update progress
+            startTimer()
+            
+            // Update now playing info
             updateNowPlayingInfo()
+            
+            // Post notification that track changed
+            print("Posting trackChangedNotification for new track: \(item.title)")
+            NotificationCenter.default.post(name: MusicPlayerService.trackChangedNotification, object: nil)
+            
+            // Save current item to user settings immediately
+            print("Saving current item to user settings immediately after playback starts")
+            Task {
+                await saveUserSettings()
+            }
         } catch {
             print("Error loading audio file: \(error)")
             handlePlaybackError(error)
@@ -300,7 +307,17 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
             return
         }
         
+        // Set current item and load it
+        currentItem = item
         loadAndPlay(item: item)
+        
+        // Post notification that track has changed
+        NotificationCenter.default.post(name: MusicPlayerService.trackChangedNotification, object: self)
+        
+        // Save current item to user settings
+        Task {
+            await saveUserSettings()
+        }
     }
     
     private func startTimer() {
@@ -428,6 +445,7 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
     private func loadUserSettings() async {
         do {
             let settings = try await musicLibrary.dataProvider.getUserSettings()
+            print("Loaded user settings, last played item: \(settings.lastPlayedMusicItem?.title ?? "none")")
             
             await MainActor.run {
                 self.volume = settings.volume
@@ -437,6 +455,24 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
                 if let player = self.player {
                     player.volume = self.volume
                 }
+                
+                // Load last played music item if available
+                if let lastPlayedItem = settings.lastPlayedMusicItem {
+                    print("Setting current item to last played: \(lastPlayedItem.title)")
+                    self.currentItem = lastPlayedItem
+                    self.currentTime = settings.lastPlaybackPosition
+                    
+                    // Notify that track has changed
+                    print("Posting trackChangedNotification from loadUserSettings")
+                    NotificationCenter.default.post(name: MusicPlayerService.trackChangedNotification, object: nil)
+                    
+                    // 立即保存用户设置，确保设置正确保存
+                    Task {
+                        await self.saveUserSettings()
+                    }
+                } else {
+                    print("No last played item found in user settings")
+                }
             }
         } catch {
             print("Failed to load user settings: \(error)")
@@ -445,13 +481,25 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
     
     private func saveUserSettings() async {
         do {
-            var settings = try await musicLibrary.dataProvider.getUserSettings()
+            // 创建新的 UserSettings 实例，而不是加载现有的
+            var settings = UserSettings()
             
             settings.volume = volume
             settings.shuffleEnabled = isShuffleEnabled
             settings.repeatMode = repeatMode
             
+            // Save last played music item and position
+            settings.lastPlayedMusicItem = currentItem
+            settings.lastPlaybackPosition = currentTime
+            
+            if let item = currentItem {
+                print("Saving current item to user settings: \(item.title)")
+            } else {
+                print("No current item to save to user settings")
+            }
+            
             try await musicLibrary.dataProvider.saveUserSettings(settings)
+            print("User settings saved successfully with lastPlayedMusicItem: \(settings.lastPlayedMusicItem?.title ?? "none")")
         } catch {
             print("Failed to save user settings: \(error)")
         }

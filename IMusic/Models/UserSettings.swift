@@ -7,19 +7,25 @@ struct UserSettings: Codable {
     var equalizerEnabled: Bool
     var equalizerPreset: EqualizerPreset
     var volume: Float
+    var lastPlayedMusicItem: MusicItem?
+    var lastPlaybackPosition: TimeInterval
     
     init(sortOption: SortOption = .title, 
          repeatMode: RepeatMode = .none, 
          shuffleEnabled: Bool = false, 
          equalizerEnabled: Bool = false, 
          equalizerPreset: EqualizerPreset = .flat, 
-         volume: Float = 0.7) {
+         volume: Float = 0.7,
+         lastPlayedMusicItem: MusicItem? = nil,
+         lastPlaybackPosition: TimeInterval = 0) {
         self.sortOption = sortOption
         self.repeatMode = repeatMode
         self.shuffleEnabled = shuffleEnabled
         self.equalizerEnabled = equalizerEnabled
         self.equalizerPreset = equalizerPreset
         self.volume = volume
+        self.lastPlayedMusicItem = lastPlayedMusicItem
+        self.lastPlaybackPosition = lastPlaybackPosition
     }
 }
 

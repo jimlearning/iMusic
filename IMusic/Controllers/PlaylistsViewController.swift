@@ -1,6 +1,6 @@
 import UIKit
 
-class PlaylistsViewController: UIViewController {
+class PlaylistsViewController: UIViewController, MiniPlayerUpdatable {
     
     // MARK: - Properties
     var musicLibraryService: MusicLibraryService!
@@ -29,7 +29,7 @@ class PlaylistsViewController: UIViewController {
         stackView.spacing = 16
         stackView.alignment = .center
         
-        let imageView = UIImageView(image: UIImage(systemName: "music.note.list"))
+        let imageView = UIImageView(image: UIImage.defaultAlbumArtwork)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .appSubtext
@@ -157,7 +157,7 @@ class PlaylistsViewController: UIViewController {
         tableView.isHidden = isEmpty
     }
     
-    private func updateMiniPlayerView() {
+    func updateMiniPlayerView() {
         if let currentItem = musicPlayerService.currentItem {
             miniPlayerView.configure(with: currentItem, playbackState: musicPlayerService.playbackState)
             miniPlayerView.isHidden = false

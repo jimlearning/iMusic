@@ -99,6 +99,23 @@
 		386957032DE02CDA008CA057 /* Red Light Green Light 150.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956D92DE02CD9008CA057 /* Red Light Green Light 150.mp3 */; };
 		386957042DE02CDA008CA057 /* This Is The Way 405.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386956DA2DE02CDA008CA057 /* This Is The Way 405.mp3 */; };
 		386957062DE082AE008CA057 /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386957052DE082AE008CA057 /* GradientView.swift */; };
+		386957162DE096F5008CA057 /* The Alphabet Is So Much Fun 296.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957072DE096F4008CA057 /* The Alphabet Is So Much Fun 296.mp3 */; };
+		386957172DE096F5008CA057 /* The Itsy Bitsy Spider 545.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957082DE096F5008CA057 /* The Itsy Bitsy Spider 545.mp3 */; };
+		386957182DE096F5008CA057 /* The Shape Song #3.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957092DE096F5008CA057 /* The Shape Song #3.mp3 */; };
+		386957192DE096F5008CA057 /* The Shape Song #1.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3869570A2DE096F5008CA057 /* The Shape Song #1.mp3 */; };
+		3869571A2DE096F5008CA057 /* The Shape Song #2.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3869570B2DE096F5008CA057 /* The Shape Song #2.mp3 */; };
+		3869571B2DE096F5008CA057 /* The Skeleton Dance 397.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3869570C2DE096F5008CA057 /* The Skeleton Dance 397.mp3 */; };
+		3869571C2DE096F5008CA057 /* The Pinocchio485.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3869570D2DE096F5008CA057 /* The Pinocchio485.mp3 */; };
+		3869571D2DE096F5008CA057 /* The Animals On The Farm711.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3869570E2DE096F5008CA057 /* The Animals On The Farm711.mp3 */; };
+		3869571E2DE096F5008CA057 /* The Muffin Man330.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 3869570F2DE096F5008CA057 /* The Muffin Man330.mp3 */; };
+		3869571F2DE096F5008CA057 /* The Months Chant749.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957102DE096F5008CA057 /* The Months Chant749.mp3 */; };
+		386957202DE096F5008CA057 /* The Ants Go Marching #2 .106.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957112DE096F5008CA057 /* The Ants Go Marching #2 .106.mp3 */; };
+		386957212DE096F5008CA057 /* The More We Get Together.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957122DE096F5008CA057 /* The More We Get Together.mp3 */; };
+		386957222DE096F5008CA057 /* The Ice Cream Song 384.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957132DE096F5008CA057 /* The Ice Cream Song 384.mp3 */; };
+		386957232DE096F5008CA057 /* The Bees Go Buzzing122.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957142DE096F5008CA057 /* The Bees Go Buzzing122.mp3 */; };
+		386957242DE096F5008CA057 /* The Farmer In The Dell 237.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957152DE096F5008CA057 /* The Farmer In The Dell 237.mp3 */; };
+		386957262DE09B36008CA057 /* MusicPreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386957252DE09B36008CA057 /* MusicPreferencesViewController.swift */; };
+		386957292DE0AC79008CA057 /* MiniPlayerUpdatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386957272DE0AC79008CA057 /* MiniPlayerUpdatable.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -196,6 +213,23 @@
 		386956D92DE02CD9008CA057 /* Red Light Green Light 150.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Red Light Green Light 150.mp3"; sourceTree = "<group>"; };
 		386956DA2DE02CDA008CA057 /* This Is The Way 405.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "This Is The Way 405.mp3"; sourceTree = "<group>"; };
 		386957052DE082AE008CA057 /* GradientView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
+		386957072DE096F4008CA057 /* The Alphabet Is So Much Fun 296.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Alphabet Is So Much Fun 296.mp3"; sourceTree = "<group>"; };
+		386957082DE096F5008CA057 /* The Itsy Bitsy Spider 545.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Itsy Bitsy Spider 545.mp3"; sourceTree = "<group>"; };
+		386957092DE096F5008CA057 /* The Shape Song #3.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Shape Song #3.mp3"; sourceTree = "<group>"; };
+		3869570A2DE096F5008CA057 /* The Shape Song #1.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Shape Song #1.mp3"; sourceTree = "<group>"; };
+		3869570B2DE096F5008CA057 /* The Shape Song #2.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Shape Song #2.mp3"; sourceTree = "<group>"; };
+		3869570C2DE096F5008CA057 /* The Skeleton Dance 397.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Skeleton Dance 397.mp3"; sourceTree = "<group>"; };
+		3869570D2DE096F5008CA057 /* The Pinocchio485.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Pinocchio485.mp3"; sourceTree = "<group>"; };
+		3869570E2DE096F5008CA057 /* The Animals On The Farm711.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Animals On The Farm711.mp3"; sourceTree = "<group>"; };
+		3869570F2DE096F5008CA057 /* The Muffin Man330.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Muffin Man330.mp3"; sourceTree = "<group>"; };
+		386957102DE096F5008CA057 /* The Months Chant749.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Months Chant749.mp3"; sourceTree = "<group>"; };
+		386957112DE096F5008CA057 /* The Ants Go Marching #2 .106.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Ants Go Marching #2 .106.mp3"; sourceTree = "<group>"; };
+		386957122DE096F5008CA057 /* The More We Get Together.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The More We Get Together.mp3"; sourceTree = "<group>"; };
+		386957132DE096F5008CA057 /* The Ice Cream Song 384.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Ice Cream Song 384.mp3"; sourceTree = "<group>"; };
+		386957142DE096F5008CA057 /* The Bees Go Buzzing122.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Bees Go Buzzing122.mp3"; sourceTree = "<group>"; };
+		386957152DE096F5008CA057 /* The Farmer In The Dell 237.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Farmer In The Dell 237.mp3"; sourceTree = "<group>"; };
+		386957252DE09B36008CA057 /* MusicPreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicPreferencesViewController.swift; sourceTree = "<group>"; };
+		386957272DE0AC79008CA057 /* MiniPlayerUpdatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniPlayerUpdatable.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -234,6 +268,7 @@
 				3869565E2DDF053D008CA057 /* Controllers */,
 				386956622DDF053D008CA057 /* IMusic.xcdatamodeld */,
 				386956672DDF053D008CA057 /* Models */,
+				386957282DE0AC79008CA057 /* Protocols */,
 				3869566B2DDF053D008CA057 /* Services */,
 				386956612DDF053D008CA057 /* Utils */,
 				386956542DDF053D008CA057 /* Views */,
@@ -271,6 +306,7 @@
 				386956842DDF3B21008CA057 /* LoginViewController.swift */,
 				386956562DDF053D008CA057 /* MainTabBarController.swift */,
 				386956572DDF053D008CA057 /* MusicPickerViewController.swift */,
+				386957252DE09B36008CA057 /* MusicPreferencesViewController.swift */,
 				386956582DDF053D008CA057 /* NowPlayingViewController.swift */,
 				386956592DDF053D008CA057 /* PlaylistDetailViewController.swift */,
 				3869565A2DDF053D008CA057 /* PlaylistsViewController.swift */,
@@ -362,6 +398,21 @@
 				386956B92DE02CD5008CA057 /* Seven Steps 424.mp3 */,
 				386956B32DE02CD3008CA057 /* The Bath Song508.mp3 */,
 				386956BB2DE02CD5008CA057 /* The Jellyfish.mp3 */,
+				386957072DE096F4008CA057 /* The Alphabet Is So Much Fun 296.mp3 */,
+				3869570E2DE096F5008CA057 /* The Animals On The Farm711.mp3 */,
+				386957112DE096F5008CA057 /* The Ants Go Marching #2 .106.mp3 */,
+				386957142DE096F5008CA057 /* The Bees Go Buzzing122.mp3 */,
+				386957152DE096F5008CA057 /* The Farmer In The Dell 237.mp3 */,
+				386957132DE096F5008CA057 /* The Ice Cream Song 384.mp3 */,
+				386957082DE096F5008CA057 /* The Itsy Bitsy Spider 545.mp3 */,
+				386957102DE096F5008CA057 /* The Months Chant749.mp3 */,
+				386957122DE096F5008CA057 /* The More We Get Together.mp3 */,
+				3869570F2DE096F5008CA057 /* The Muffin Man330.mp3 */,
+				3869570D2DE096F5008CA057 /* The Pinocchio485.mp3 */,
+				3869570A2DE096F5008CA057 /* The Shape Song #1.mp3 */,
+				3869570B2DE096F5008CA057 /* The Shape Song #2.mp3 */,
+				386957092DE096F5008CA057 /* The Shape Song #3.mp3 */,
+				3869570C2DE096F5008CA057 /* The Skeleton Dance 397.mp3 */,
 				386956D02DE02CD8008CA057 /* The Wheels On The Bus46.mp3 */,
 				386956DA2DE02CDA008CA057 /* This Is The Way 405.mp3 */,
 				386956C72DE02CD7008CA057 /* Uh huh 453.mp3 */,
@@ -371,6 +422,14 @@
 				386956C22DE02CD6008CA057 /* Yes, I Can 566.mp3 */,
 			);
 			path = Resources;
+			sourceTree = "<group>";
+		};
+		386957282DE0AC79008CA057 /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				386957272DE0AC79008CA057 /* MiniPlayerUpdatable.swift */,
+			);
+			path = Protocols;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -440,12 +499,14 @@
 				386956F52DE02CDA008CA057 /* 10 Little Buses 203.mp3 in Resources */,
 				386956912DDF401E008CA057 /* 千千阙歌-陈慧娴.flac in Resources */,
 				386956F42DE02CDA008CA057 /* I See Something Pink682.mp3 in Resources */,
+				3869571F2DE096F5008CA057 /* The Months Chant749.mp3 in Resources */,
 				386956E52DE02CDA008CA057 /* The Jellyfish.mp3 in Resources */,
 				386956A02DDF458A008CA057 /* 远山少年-程奎.mp3 in Resources */,
 				386956E82DE02CDA008CA057 /* Here Is The Beehive142.mp3 in Resources */,
 				386956E12DE02CDA008CA057 /* Brush Your Teeth341.mp3 in Resources */,
 				386956E72DE02CDA008CA057 /* Little Robin Redbreast 354.mp3 in Resources */,
 				386957012DE02CDA008CA057 /* I Like You325.mp3 in Resources */,
+				3869571E2DE096F5008CA057 /* The Muffin Man330.mp3 in Resources */,
 				386956A92DDF458A008CA057 /* 春天里-汪峰.flac in Resources */,
 				386956DC2DE02CDA008CA057 /* A Sailor Went To Sea314.mp3 in Resources */,
 				386956F02DE02CDA008CA057 /* Who Took The Candy623.mp3 in Resources */,
@@ -453,11 +514,18 @@
 				386957022DE02CDA008CA057 /* Count Down 582.mp3 in Resources */,
 				386956F82DE02CDA008CA057 /* Say Cheese 499.mp3 in Resources */,
 				386956A52DDF458A008CA057 /* 四个女生-心愿.flac in Resources */,
+				386957192DE096F5008CA057 /* The Shape Song #1.mp3 in Resources */,
 				386956F22DE02CDA008CA057 /* Are You Hungry.mp3 in Resources */,
+				386957242DE096F5008CA057 /* The Farmer In The Dell 237.mp3 in Resources */,
+				386957162DE096F5008CA057 /* The Alphabet Is So Much Fun 296.mp3 in Resources */,
 				386956A32DDF458A008CA057 /* 青花瓷-周杰伦.flac in Resources */,
+				386957232DE096F5008CA057 /* The Bees Go Buzzing122.mp3 in Resources */,
 				386957032DE02CDA008CA057 /* Red Light Green Light 150.mp3 in Resources */,
+				3869571C2DE096F5008CA057 /* The Pinocchio485.mp3 in Resources */,
 				386956922DDF401E008CA057 /* 御龙吟-姚贝娜.mp3 in Resources */,
+				3869571B2DE096F5008CA057 /* The Skeleton Dance 397.mp3 in Resources */,
 				386956E32DE02CDA008CA057 /* Seven Steps 424.mp3 in Resources */,
+				386957182DE096F5008CA057 /* The Shape Song #3.mp3 in Resources */,
 				386956942DDF401E008CA057 /* Happy Day–宇珩.flac in Resources */,
 				386957002DE02CDA008CA057 /* Go Away 652.mp3 in Resources */,
 				386956EF2DE02CDA008CA057 /* Put On Your Shoes 629.mp3 in Resources */,
@@ -466,6 +534,7 @@
 				386956F32DE02CDA008CA057 /* Baby Shark369.mp3 in Resources */,
 				386956E22DE02CDA008CA057 /* Hello Hello504.mp3 in Resources */,
 				386956DE2DE02CDA008CA057 /* How Many Fingers 381.mp3 in Resources */,
+				386957212DE096F5008CA057 /* The More We Get Together.mp3 in Resources */,
 				386956932DDF401E008CA057 /* Imagine Dragons–Natural.flac in Resources */,
 				386956EC2DE02CDA008CA057 /* Yes, I Can 566.mp3 in Resources */,
 				386956EE2DE02CDA008CA057 /* Clean Up Song 455.mp3 in Resources */,
@@ -473,6 +542,7 @@
 				386956DF2DE02CDA008CA057 /* Jingle Bells 729.mp3 in Resources */,
 				386956442DDEE24D008CA057 /* Assets.xcassets in Resources */,
 				386956FA2DE02CDA008CA057 /* The Wheels On The Bus46.mp3 in Resources */,
+				386957222DE096F5008CA057 /* The Ice Cream Song 384.mp3 in Resources */,
 				386956F62DE02CDA008CA057 /* One Little Finger 700.mp3 in Resources */,
 				386957042DE02CDA008CA057 /* This Is The Way 405.mp3 in Resources */,
 				386956E92DE02CDA008CA057 /* Goodbye My Friends 458.mp3 in Resources */,
@@ -482,11 +552,15 @@
 				386956FE2DE02CDA008CA057 /* Five Little Ducks 390.mp3 in Resources */,
 				386956FF2DE02CDA008CA057 /* Follow Me 233.mp3 in Resources */,
 				386956E02DE02CDA008CA057 /* What Do You Want For Christmas590.mp3 in Resources */,
+				386957202DE096F5008CA057 /* The Ants Go Marching #2 .106.mp3 in Resources */,
 				386956472DDEE24D008CA057 /* Base in Resources */,
+				3869571A2DE096F5008CA057 /* The Shape Song #2.mp3 in Resources */,
 				386956EA2DE02CDA008CA057 /* Pat A Cake 264.mp3 in Resources */,
 				386956F92DE02CDA008CA057 /* Hide And Seek402.mp3 in Resources */,
 				386956F72DE02CDA008CA057 /* Down By The Bay208.mp3 in Resources */,
+				3869571D2DE096F5008CA057 /* The Animals On The Farm711.mp3 in Resources */,
 				386956E42DE02CDA008CA057 /* Walking Walking 420.mp3 in Resources */,
+				386957172DE096F5008CA057 /* The Itsy Bitsy Spider 545.mp3 in Resources */,
 				3869563F2DDEE24C008CA057 /* Base in Resources */,
 				386956A42DDF458A008CA057 /* 美丽的神话-韩红孙楠.mp3 in Resources */,
 			);
@@ -502,6 +576,8 @@
 				3869566D2DDF053D008CA057 /* MusicItemCell.swift in Sources */,
 				3869567E2DDF053D008CA057 /* MusicItem.swift in Sources */,
 				386956892DDF3CE7008CA057 /* HomeViewController.swift in Sources */,
+				386957262DE09B36008CA057 /* MusicPreferencesViewController.swift in Sources */,
+				386957292DE0AC79008CA057 /* MiniPlayerUpdatable.swift in Sources */,
 				386956722DDF053D008CA057 /* LibraryViewController.swift in Sources */,
 				386956732DDF053D008CA057 /* MainTabBarController.swift in Sources */,
 				386956762DDF053D008CA057 /* PlaylistDetailViewController.swift in Sources */,

@@ -7,11 +7,11 @@ class PlaylistCell: UITableViewCell {
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 6
         imageView.backgroundColor = .systemGray5
-        imageView.image = UIImage(systemName: "music.note.list")
+        imageView.image = UIImage.defaultAlbumArtwork
         imageView.tintColor = .appPrimary
         return imageView
     }()
@@ -96,5 +96,24 @@ class PlaylistCell: UITableViewCell {
         countLabel.text = "\(count) \(count == 1 ? "song" : "songs"), \(playlist.formattedTotalDuration)"
         
         dateLabel.text = playlist.dateCreated.formatAsDateString()
+        
+        // Get first music item in playlist for artwork
+        if let firstItem = playlist.musicItems.first, let artworkData = firstItem.artworkData, let image = UIImage(data: artworkData) {
+            iconImageView.image = image
+            iconImageView.backgroundColor = .clear
+        } else {
+            setupDefaultImage(with: playlist.name)
+        }
+    }
+    
+    private func setupDefaultImage(with playlistName: String) {
+        if !playlistName.isEmpty {
+            iconImageView.backgroundColor = colorBasedOnString(playlistName)
+        } else {
+            iconImageView.backgroundColor = randomPredefinedColor()
+        }
+        
+        iconImageView.image = UIImage.defaultAlbumArtwork
+        iconImageView.tintColor = .white
     }
 }

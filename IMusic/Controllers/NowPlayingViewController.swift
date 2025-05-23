@@ -177,6 +177,14 @@ class NowPlayingViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         updateUI()
+        
+        // Register for track changed notifications
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(trackChanged),
+            name: MusicPlayerService.trackChangedNotification,
+            object: nil
+        )
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -428,5 +436,11 @@ class NowPlayingViewController: UIViewController {
     
     @objc private func volumeSliderChanged(_ slider: UISlider) {
         musicPlayerService.setVolume(slider.value)
+    }
+    
+    // Handle track changed notification
+    @objc private func trackChanged() {
+        print("Track changed notification received in NowPlayingViewController")
+        updateUI()
     }
 }

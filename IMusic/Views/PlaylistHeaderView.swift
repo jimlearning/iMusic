@@ -7,11 +7,11 @@ class PlaylistHeaderView: UIView {
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
         imageView.backgroundColor = .systemGray5
-        imageView.image = UIImage(systemName: "music.note.list")
+        imageView.image = UIImage.defaultAlbumArtwork
         imageView.tintColor = .appPrimary
         return imageView
     }()
@@ -138,5 +138,24 @@ class PlaylistHeaderView: UIView {
         shuffleButton.isEnabled = !isEmpty
         playAllButton.alpha = isEmpty ? 0.5 : 1.0
         shuffleButton.alpha = isEmpty ? 0.5 : 1.0
+        
+        // Get first music item in playlist for artwork
+        if let firstItem = playlist.musicItems.first, let artworkData = firstItem.artworkData, let image = UIImage(data: artworkData) {
+            iconImageView.image = image
+            iconImageView.backgroundColor = .clear
+        } else {
+            setupDefaultImage(with: playlist.name)
+        }
+    }
+    
+    private func setupDefaultImage(with playlistName: String) {
+        if !playlistName.isEmpty {
+            iconImageView.backgroundColor = colorBasedOnString(playlistName)
+        } else {
+            iconImageView.backgroundColor = randomPredefinedColor()
+        }
+        
+        iconImageView.image = UIImage.defaultAlbumArtwork
+        iconImageView.tintColor = .white
     }
 }

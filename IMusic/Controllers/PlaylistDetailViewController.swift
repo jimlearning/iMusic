@@ -1,6 +1,6 @@
 import UIKit
 
-class PlaylistDetailViewController: UIViewController {
+class PlaylistDetailViewController: UIViewController, MiniPlayerUpdatable {
     
     // MARK: - Properties
     var musicLibraryService: MusicLibraryService!
@@ -118,7 +118,7 @@ class PlaylistDetailViewController: UIViewController {
         emptyStateLabel.isHidden = !isEmpty
     }
     
-    private func updateMiniPlayerView() {
+    func updateMiniPlayerView() {
         if let currentItem = musicPlayerService.currentItem {
             miniPlayerView.configure(with: currentItem, playbackState: musicPlayerService.playbackState)
             miniPlayerView.isHidden = false

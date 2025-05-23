@@ -133,14 +133,35 @@ class LocalDataProvider: DataProvider {
     
     func getUserSettings() async throws -> UserSettings {
         if let data = userDefaults.data(forKey: settingsKey) {
-            return try JSONDecoder().decode(UserSettings.self, from: data)
+            do {
+                return try JSONDecoder().decode(UserSettings.self, from: data)
+            } catch {
+                print("Error decoding user settings: \(error), returning default settings")
+                // 如果解码失败，清除旧的设置并返回默认设置
+                userDefaults.removeObject(forKey: settingsKey)
+                return UserSettings()
+            }
         }
         return UserSettings()
     }
     
     func saveUserSettings(_ settings: UserSettings) async throws {
-        let data = try JSONEncoder().encode(settings)
-        userDefaults.set(data, forKey: settingsKey)
+        do {
+            let encoder = JSONEncoder()
+            let data = try encoder.encode(settings)
+            userDefaults.set(data, forKey: settingsKey)
+            userDefaults.synchronize() // 确保立即写入
+            
+            // 验证数据是否正确保存
+            if let savedData = userDefaults.data(forKey: settingsKey) {
+                let decoder = JSONDecoder()
+                let loadedSettings = try decoder.decode(UserSettings.self, from: savedData)
+                print("Verification successful: Saved settings with lastPlayedMusicItem: \(loadedSettings.lastPlayedMusicItem?.title ?? "none")")
+            }
+        } catch {
+            print("Error in saveUserSettings: \(error)")
+            throw error
+        }
     }
 }
 

@@ -19,12 +19,20 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         // Check if user is already logged in
         if isUserLoggedIn() {
-            // User is logged in, go directly to main interface with TabBar
-            let mainTabBarController = MainTabBarController()
-            window?.rootViewController = mainTabBarController
+            // Check if user has completed music preferences
+            if hasCompletedMusicPreferences() {
+                // User has completed preferences, go to main interface
+                let mainTabBarController = MainTabBarController()
+                window?.rootViewController = mainTabBarController
+            } else {
+                // User is logged in but hasn't set preferences
+                let preferencesVC = MusicPreferencesViewController()
+                window?.rootViewController = preferencesVC
+            }
         } else {
             // User is not logged in, show login screen
-            window?.rootViewController = LoginViewController()
+            let loginVC = LoginViewController()
+            window?.rootViewController = loginVC
         }
         
         window?.makeKeyAndVisible()
@@ -34,6 +42,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     private func isUserLoggedIn() -> Bool {
         // Check UserDefaults for login status
         return UserDefaults.standard.bool(forKey: "com.imusic.userLoggedIn")
+    }
+    
+    // Helper method to check if user has completed music preferences
+    private func hasCompletedMusicPreferences() -> Bool {
+        // Check UserDefaults for music preferences completion status
+        return UserDefaults.standard.bool(forKey: "hasCompletedMusicPreferences")
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {

@@ -2,6 +2,10 @@ import UIKit
 
 class AccountLoginViewController: UIViewController {
     
+    // MARK: - Properties
+    var musicLibraryService: MusicLibraryService!
+    var musicPlayerService: MusicPlayerService!
+    
     let defaultUsername = "1234567890"
     let defaultPassword = "ABCDEFGHIJKLMN"
     
@@ -205,17 +209,17 @@ class AccountLoginViewController: UIViewController {
         // Validate input
         guard let username = usernameTextField.text, !username.isEmpty,
               let password = passwordTextField.text, !password.isEmpty else {
-            showAlert(title: "Input Error", message: "Please enter both username and password")
+            showAlert(title: "输入错误", message: "请输入账号和密码")
             return
         }
         
         // Set user as logged in
         UserDefaults.standard.set(true, forKey: "com.imusic.userLoggedIn")
         
-        // For now, accept any valid input
-        let mainTabBarController = MainTabBarController()
-        mainTabBarController.modalPresentationStyle = .fullScreen
-        present(mainTabBarController, animated: true)
+        // Show music preferences screen instead of main tab bar
+        let preferencesVC = MusicPreferencesViewController()
+        preferencesVC.modalPresentationStyle = .fullScreen
+        present(preferencesVC, animated: true)
     }
     
     @objc private func wechatButtonTapped() {

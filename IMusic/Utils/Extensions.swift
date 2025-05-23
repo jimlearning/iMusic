@@ -13,6 +13,7 @@ extension UIColor {
 // MARK: - UIImage Extensions
 extension UIImage {
 //    static let defaultArtwork = UIImage(named: "DefaultArtwork") ?? UIImage(systemName: "music.note")!
+    static let defaultAlbumArtwork = UIImage(named: "DefaultAlbumArtwork")
     static let playIcon = UIImage(systemName: "play.fill")!
     static let pauseIcon = UIImage(systemName: "pause.fill")!
     static let skipForwardIcon = UIImage(systemName: "forward.fill")!
@@ -43,35 +44,57 @@ extension UIImage {
 }
 
 let predefinedColors: [UIColor] = [
-    UIColor(red: 0.906, green: 0.298, blue: 0.235, alpha: 1.0),  // 红色
-    UIColor(red: 0.204, green: 0.596, blue: 0.859, alpha: 1.0),  // 蓝色
-    UIColor(red: 0.180, green: 0.800, blue: 0.443, alpha: 1.0),  // 绿色
-    UIColor(red: 0.945, green: 0.769, blue: 0.059, alpha: 1.0),  // 黄色
-    UIColor(red: 0.608, green: 0.349, blue: 0.714, alpha: 1.0),  // 紫色
-    UIColor(red: 1.000, green: 0.596, blue: 0.000, alpha: 1.0),  // 橙色
-    UIColor(red: 0.161, green: 0.502, blue: 0.725, alpha: 1.0),  // 深蓝色
-    UIColor(red: 0.827, green: 0.329, blue: 0.510, alpha: 1.0),  // 粉色
-    UIColor(red: 0.957, green: 0.263, blue: 0.475, alpha: 1.0),  // 鲜粉色
-    UIColor(red: 0.153, green: 0.682, blue: 0.376, alpha: 1.0)   // 翠绿色
+    // Vibrant colors
+    UIColor(red: 0.906, green: 0.298, blue: 0.235, alpha: 1.0),  // Red
+    UIColor(red: 0.204, green: 0.596, blue: 0.859, alpha: 1.0),  // Blue
+    UIColor(red: 0.180, green: 0.800, blue: 0.443, alpha: 1.0),  // Green
+    UIColor(red: 0.945, green: 0.769, blue: 0.059, alpha: 1.0),  // Yellow
+    UIColor(red: 0.608, green: 0.349, blue: 0.714, alpha: 1.0),  // Purple
+    UIColor(red: 1.000, green: 0.596, blue: 0.000, alpha: 1.0),  // Orange
+    UIColor(red: 0.827, green: 0.329, blue: 0.510, alpha: 1.0),  // Pink
+    
+    // Rich colors
+    UIColor(red: 0.173, green: 0.243, blue: 0.314, alpha: 1.0),  // Navy Blue
+    UIColor(red: 0.220, green: 0.471, blue: 0.384, alpha: 1.0),  // Forest Green
+    UIColor(red: 0.502, green: 0.188, blue: 0.137, alpha: 1.0),  // Rust
+    UIColor(red: 0.416, green: 0.235, blue: 0.325, alpha: 1.0),  // Burgundy
+    UIColor(red: 0.353, green: 0.267, blue: 0.475, alpha: 1.0),  // Deep Purple
+    UIColor(red: 0.498, green: 0.388, blue: 0.278, alpha: 1.0),  // Coffee
+    
+    // Modern colors
+    UIColor(red: 0.129, green: 0.588, blue: 0.953, alpha: 1.0),  // Dodger Blue
+    UIColor(red: 0.937, green: 0.424, blue: 0.267, alpha: 1.0),  // Coral
+    UIColor(red: 0.298, green: 0.686, blue: 0.314, alpha: 1.0),  // Medium Green
+    UIColor(red: 0.902, green: 0.494, blue: 0.133, alpha: 1.0),  // Dark Orange
+    UIColor(red: 0.498, green: 0.090, blue: 0.365, alpha: 1.0),  // Plum
+    UIColor(red: 0.957, green: 0.263, blue: 0.475, alpha: 1.0),  // Hot Pink
+    
+    // More modern colors
+    UIColor(red: 0.000, green: 0.835, blue: 0.988, alpha: 1.0),  // Cyan
+    UIColor(red: 0.976, green: 0.333, blue: 0.439, alpha: 1.0),  // Raspberry
+    UIColor(red: 0.400, green: 0.851, blue: 0.267, alpha: 1.0),  // Lime Green
+    UIColor(red: 1.000, green: 0.733, blue: 0.424, alpha: 1.0),  // Peach
+    UIColor(red: 0.576, green: 0.439, blue: 0.859, alpha: 1.0)   // Lavender
 ]
 
-func randomColor() -> UIColor {
-    
-    // Generate a unique index from 0-9 based on self's hash value
-    let colorIndex = Int.random(in: 0 ..< predefinedColors.count)
-    
+// 基于字符串生成固定颜色
+func colorBasedOnString(_ string: String) -> UIColor {
+    let nameHash = abs(string.hash)
+    let colorIndex = nameHash % predefinedColors.count
     return predefinedColors[colorIndex]
 }
 
-extension NSObject {
-    func associatedRandomColor() -> UIColor {
-        // Generate a unique index from 0-9 based on self's hash value
-        let hashValue = abs(ObjectIdentifier(self).hashValue)
-        let colorIndex = hashValue % predefinedColors.count
-        
-        return predefinedColors[colorIndex]
-    }
+// 获取随机颜色
+func randomPredefinedColor() -> UIColor {
+    let colorIndex = Int.random(in: 0..<predefinedColors.count)
+    return predefinedColors[colorIndex]
 }
+
+func randomColor() -> UIColor {
+    let colorIndex = Int.random(in: 0 ..< predefinedColors.count)
+    return predefinedColors[colorIndex]
+}
+
 
 // MARK: - TimeInterval Extensions
 extension TimeInterval {

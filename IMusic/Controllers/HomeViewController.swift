@@ -1,7 +1,7 @@
 import UIKit
 import Foundation
 
-class HomeViewController: UIViewController {
+class HomeViewController: UIViewController, MiniPlayerUpdatable {
     
     // MARK: - Layout Constants
     private struct LayoutMetrics {
@@ -25,9 +25,6 @@ class HomeViewController: UIViewController {
     private var sleepPlaylists: [PlaylistItem] = []
     private var relaxPlaylists: [PlaylistItem] = []
     private var focusPlaylists: [PlaylistItem] = []
-    
-    private var isFirstLoad = true
-    private var isLoading = false
     
     // Properties for implementing sticky header effect
     private var segmentControlTopConstraint: NSLayoutConstraint!
@@ -123,10 +120,15 @@ class HomeViewController: UIViewController {
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.backgroundColor = .clear
+        collectionView.showsVerticalScrollIndicator = false
         collectionView.isScrollEnabled = false
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.register(PlaylistCollectionViewCell.self, forCellWithReuseIdentifier: "PlaylistCell")
+        
+        // 禁用 cell 尺寸变化的隐式动画
+        collectionView.layer.shouldRasterize = true
+        collectionView.layer.rasterizationScale = UIScreen.main.scale
         return collectionView
     }()
     
@@ -138,25 +140,11 @@ class HomeViewController: UIViewController {
         return view
     }()
     
-    private lazy var loadingIndicator: UIActivityIndicatorView = {
-        let indicator = UIActivityIndicatorView(style: .large)
-        indicator.translatesAutoresizingMaskIntoConstraints = false
-        indicator.hidesWhenStopped = true
-        indicator.color = UIColor(red: 95/255, green: 186/255, blue: 125/255, alpha: 1.0) // Green
-        return indicator
-    }()
-    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
-        
-        isFirstLoad = true
-        isLoading = true
-        
-        scrollView.isHidden = true
-        segmentContainerView.isHidden = true
         
         scrollView.delegate = self
         
@@ -167,10 +155,26 @@ class HomeViewController: UIViewController {
             object: nil
         )
         
-        view.bringSubviewToFront(loadingIndicator)
+        // Add observer for metadata update completion
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(metadataUpdateCompleted), 
+            name: DefaultPlaylistsManager.metadataUpdateCompletedNotification, 
+            object: nil
+        )
         
+        // Add observer for track change notification
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(trackChanged), 
+            name: MusicPlayerService.trackChangedNotification, 
+            object: nil
+        )
+                
         loadData()
     }
+    
+    // viewDidLayoutSubviews 方法已移除，动画禁用逻辑移至 loadData 方法中
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
@@ -186,6 +190,31 @@ class HomeViewController: UIViewController {
             guard let self = self else { return }
             
             self.loadData()
+        }
+    }
+    
+    @objc private func metadataUpdateCompleted() {
+        print("Metadata update completed notification received")
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // Reload data to reflect updated metadata
+            self.loadData()
+            
+            // Update mini player if it's visible
+            self.updateMiniPlayerView()
+        }
+    }
+    
+    @objc private func trackChanged() {
+        print("Track changed notification received in HomeViewController")
+        
+        DispatchQueue.main.async { [weak self] in
+            guard let self = self else { return }
+            
+            // Update mini player to show the new track
+            self.updateMiniPlayerView()
         }
     }
     
@@ -209,7 +238,6 @@ class HomeViewController: UIViewController {
         contentView.addSubview(playlistCollectionView)
         
         view.addSubview(miniPlayerView)
-        view.addSubview(loadingIndicator)
         
         // Calculate threshold position for segment control sticky behavior
         // Add standardMargin to ensure proper spacing between featuredView and segmentContainerView
@@ -283,10 +311,6 @@ class HomeViewController: UIViewController {
             miniPlayerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             miniPlayerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             miniPlayerView.heightAnchor.constraint(equalToConstant: 60),
-            
-            // Loading indicator
-            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(featuredViewTapped))
@@ -295,37 +319,7 @@ class HomeViewController: UIViewController {
     
     // MARK: - Data Loading
     
-    private func showLoadingIndicator() {
-        view.bringSubviewToFront(loadingIndicator)
-        
-        loadingIndicator.startAnimating()
-        scrollView.isHidden = true
-        segmentContainerView.isHidden = true
-        miniPlayerView.isHidden = true
-        
-        print("Loading indicator shown")
-    }
-    
-    private func hideLoadingIndicator() {
-        loadingIndicator.stopAnimating()
-        scrollView.isHidden = false
-        segmentContainerView.isHidden = false
-        
-        if musicPlayerService.currentItem != nil {
-            updateMiniPlayerView()
-        }
-        
-        isLoading = false
-        isFirstLoad = false
-        
-        print("Loading indicator hidden")
-    }
-    
     private func loadData() {
-        if isFirstLoad || isLoading {
-            showLoadingIndicator()
-        }
-        
         let playlists = musicLibraryService.playlists
         print("Found \(playlists.count) playlists")
         
@@ -361,11 +355,11 @@ class HomeViewController: UIViewController {
             }
         }
         
-        if isFirstLoad || isLoading {
-            hideLoadingIndicator()
+        // 数据准备好后，禁用动画效果重新加载
+        UIView.performWithoutAnimation {
+            playlistCollectionView.reloadData()
+            playlistCollectionView.layoutIfNeeded()
         }
-        
-        playlistCollectionView.reloadData()
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             self?.updateCollectionViewHeight()
@@ -409,8 +403,20 @@ class HomeViewController: UIViewController {
         heightConstraint.isActive = true
         
         // Update layout
-        UIView.animate(withDuration: 0.2) {
+        UIView.performWithoutAnimation {
             self.view.layoutIfNeeded()
+        }
+    }
+    
+    func updateMiniPlayerView() {
+        print("HomeViewController: updateMiniPlayerView called")
+        if let currentItem = musicPlayerService.currentItem {
+            print("HomeViewController: Configuring mini player with item: \(currentItem.title)")
+            miniPlayerView.configure(with: currentItem, playbackState: musicPlayerService.playbackState)
+            miniPlayerView.isHidden = false
+        } else {
+            print("HomeViewController: No current item, hiding mini player")
+            miniPlayerView.isHidden = true
         }
     }
     
@@ -430,27 +436,24 @@ class HomeViewController: UIViewController {
         // Set featured image if available
         if let firstItem = playlist.musicItems.first, let artworkData = firstItem.artworkData, let image = UIImage(data: artworkData) {
             featuredImageView.image = image
+            featuredImageView.contentMode = .scaleAspectFill
         } else {
-            // Use a placeholder color if no artwork is available
+            // Use a placeholder color based on playlist name
             featuredImageView.image = UIImage(systemName: "music.note")?.withRenderingMode(.alwaysTemplate)
+            featuredImageView.contentMode = .scaleAspectFit
             featuredImageView.tintColor = .white
-            featuredImageView.backgroundColor = randomColor()
-        }
-    }
-    
-    private func updateMiniPlayerView() {
-        if let currentItem = musicPlayerService.currentItem {
-            miniPlayerView.configure(with: currentItem, playbackState: musicPlayerService.playbackState)
-            miniPlayerView.isHidden = false
-        } else {
-            miniPlayerView.isHidden = true
+            featuredImageView.backgroundColor = colorBasedOnString(playlist.name)
         }
     }
     
     // MARK: - Actions
     
     @objc private func categoryChanged(_ sender: UISegmentedControl) {
-        playlistCollectionView.reloadData()
+        // 数据准备好后，禁用动画效果重新加载
+        UIView.performWithoutAnimation {
+            playlistCollectionView.reloadData()
+            playlistCollectionView.layoutIfNeeded()
+        }
         
         // Update collection view height after category change
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in

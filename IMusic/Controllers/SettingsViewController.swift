@@ -1,6 +1,6 @@
 import UIKit
 
-class SettingsViewController: UIViewController {
+class SettingsViewController: UIViewController, MiniPlayerUpdatable {
     
     // MARK: - Properties
     var musicLibraryService: MusicLibraryService!
@@ -63,12 +63,14 @@ class SettingsViewController: UIViewController {
         case sortBy
         case clearCache
         case recreatePlaylists
+        case logout
         
         var title: String {
             switch self {
             case .sortBy: return "Sort By"
             case .clearCache: return "Clear Cache"
             case .recreatePlaylists: return "Recreate All Playlists"
+            case .logout: return "Logout"
             }
         }
     }
@@ -120,7 +122,7 @@ class SettingsViewController: UIViewController {
         ])
     }
     
-    private func updateMiniPlayerView() {
+    func updateMiniPlayerView() {
         if let currentItem = musicPlayerService.currentItem {
             miniPlayerView.configure(with: currentItem, playbackState: musicPlayerService.playbackState)
             miniPlayerView.isHidden = false
@@ -233,43 +235,73 @@ class SettingsViewController: UIViewController {
                 self.loadSettings()
             }
         )
-    }
     
-    private func recreatePlaylists() {
-        showConfirmationAlert(
-            title: "Recreate All Playlists",
-            message: "This will delete and recreate all default playlists. Your music files will not be affected. This may help if playlists are not showing music correctly. Continue?",
-            confirmAction: {
-                // Show activity indicator
-                let activityIndicator = UIActivityIndicatorView(style: .large)
-                activityIndicator.center = self.view.center
-                activityIndicator.startAnimating()
-                self.view.addSubview(activityIndicator)
+    NSLayoutConstraint.activate([
+        tableView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+        tableView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+        tableView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        tableView.bottomAnchor.constraint(equalTo: miniPlayerView.topAnchor),
+        
+        miniPlayerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+        miniPlayerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+        miniPlayerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+        miniPlayerView.heightAnchor.constraint(equalToConstant: 60)
+    ])
+}
+    
+private func recreatePlaylists() {
+    showConfirmationAlert(
+        title: "Recreate All Playlists",
+        message: "This will recreate all default playlists based on your music library. Any custom playlists will not be affected. Continue?",
+        confirmAction: {
+            Task {
+                // Show loading indicator
+                let loadingAlert = self.showLoadingAlert(message: "Recreating playlists...")
                 
-                // Force recreate all playlists
-                Task {
-                    await DefaultPlaylistsManager.forceRecreateAllPlaylists(musicLibraryService: self.musicLibraryService)
-                    
-                    // Reload data in main thread
-                    await MainActor.run {
-                        activityIndicator.stopAnimating()
-                        activityIndicator.removeFromSuperview()
-                        
+                // Recreate playlists
+                await DefaultPlaylistsManager.forceRecreateAllPlaylists(musicLibraryService: self.musicLibraryService)
+                
+                // Dismiss loading indicator
+                await MainActor.run {
+                    loadingAlert.dismiss(animated: true) {
                         // Show success message
                         self.showAlert(title: "Success", message: "All playlists have been recreated successfully.")
                     }
                 }
             }
-        )
-    }
+        }
+    )
+}
     
-    private func showNowPlayingView(for item: MusicItem) {
-        let nowPlayingVC = NowPlayingViewController()
-        nowPlayingVC.musicPlayerService = musicPlayerService
-        nowPlayingVC.musicLibraryService = musicLibraryService
-        nowPlayingVC.modalPresentationStyle = .fullScreen
-        present(nowPlayingVC, animated: true)
-    }
+private func logout() {
+    showConfirmationAlert(
+        title: "Logout",
+        message: "Are you sure you want to logout?",
+        confirmAction: {
+            // Clear user login status
+            UserDefaults.standard.set(false, forKey: "com.imusic.userLoggedIn")
+            
+            // Reset music preferences if needed
+            // UserDefaults.standard.set(false, forKey: "hasCompletedMusicPreferences")
+            
+            // Present login screen
+            let loginVC = LoginViewController()
+            loginVC.modalPresentationStyle = .fullScreen
+            self.present(loginVC, animated: true) {
+                // Clear navigation stack
+                self.navigationController?.viewControllers = []
+            }
+        }
+    )
+}
+    
+private func showNowPlayingView(for item: MusicItem) {
+    let nowPlayingVC = NowPlayingViewController()
+    nowPlayingVC.musicPlayerService = musicPlayerService
+    nowPlayingVC.musicLibraryService = musicLibraryService
+    nowPlayingVC.modalPresentationStyle = .fullScreen
+    present(nowPlayingVC, animated: true)
+}
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource
@@ -315,6 +347,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case .equalizer:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
                 cell.textLabel?.text = rowType.title
+                cell.textLabel?.textColor = .label
                 cell.detailTextLabel?.text = settings?.equalizerPreset.rawValue
                 cell.accessoryType = .disclosureIndicator
                 return cell
@@ -322,6 +355,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case .repeatMode:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
                 cell.textLabel?.text = rowType.title
+                cell.textLabel?.textColor = .label
                 
                 let repeatMode = settings?.repeatMode ?? .none
                 switch repeatMode {
@@ -350,6 +384,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             case .sortBy:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
                 cell.textLabel?.text = rowType.title
+                cell.textLabel?.textColor = .label
                 cell.detailTextLabel?.text = settings?.sortOption.rawValue
                 cell.accessoryType = .disclosureIndicator
                 return cell
@@ -365,6 +400,12 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 cell.textLabel?.text = rowType.title
                 cell.textLabel?.textColor = .systemBlue
                 return cell
+                
+            case .logout:
+                let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
+                cell.textLabel?.text = rowType.title
+                cell.textLabel?.textColor = .systemRed
+                return cell
             }
             
         case .about:
@@ -374,6 +415,7 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             
             let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
             cell.textLabel?.text = rowType.title
+            cell.textLabel?.textColor = .label
             
             switch rowType {
             case .version:
@@ -428,6 +470,9 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 
             case .recreatePlaylists:
                 recreatePlaylists()
+                
+            case .logout:
+                logout()
             }
             
         case .about:
@@ -458,6 +503,40 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         settings?.shuffleEnabled = switchControl.isOn
         musicPlayerService.toggleShuffle()
         saveSettings()
+    }
+}
+
+// MARK: - Helper Methods
+extension SettingsViewController {
+    private func showConfirmationAlert(title: String, message: String, confirmAction: @escaping () -> Void) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        
+        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "Confirm", style: .destructive) { _ in
+            confirmAction()
+        })
+        
+        present(alertController, animated: true)
+    }
+    
+    private func showLoadingAlert(message: String) -> UIAlertController {
+        let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
+        
+        let loadingIndicator = UIActivityIndicatorView(frame: CGRect(x: 10, y: 5, width: 50, height: 50))
+        loadingIndicator.hidesWhenStopped = true
+        loadingIndicator.style = .medium
+        loadingIndicator.startAnimating()
+        
+        alertController.view.addSubview(loadingIndicator)
+        present(alertController, animated: true)
+        
+        return alertController
+    }
+    
+    private func showAlert(title: String, message: String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        alertController.addAction(UIAlertAction(title: "OK", style: .default))
+        present(alertController, animated: true)
     }
 }
 
