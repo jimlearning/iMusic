@@ -4,8 +4,10 @@ import AVFoundation
 // This class handles the creation and management of default playlists
 class DefaultPlaylistsManager {
     
-    // Key to track if default playlists have been created
+    // Keys to track playlist creation status
     private static let defaultPlaylistsCreatedKey = "com.imusic.defaultPlaylistsCreated"
+    private static let playlistVersionKey = "com.imusic.playlistVersion"
+    private static let currentPlaylistVersion = 2 // Increment this when making changes to playlist structure
     
     // Category names
     static let recommendedCategory = "推荐"
@@ -48,7 +50,6 @@ class DefaultPlaylistsManager {
     
     private static let englishPopMusic = [
         "Imagine Dragons–Natural.flac",
-        "When The Band Comes Marching In 133.mp3",
         "Take Me Out To The Ball Game275.mp3",
         "远山少年-程奎.mp3",
     ]
@@ -160,13 +161,51 @@ class DefaultPlaylistsManager {
         "The Skeleton Dance 397.mp3",
     ]
     
+    // Public method to force recreate all playlists
+    static func forceRecreateAllPlaylists(musicLibraryService: MusicLibraryService) async {
+        // Reset creation flags
+        UserDefaults.standard.set(false, forKey: defaultPlaylistsCreatedKey)
+        UserDefaults.standard.set(0, forKey: playlistVersionKey)
+        
+        print("Forcing recreation of all playlists")
+        
+        // Delete all existing playlists
+        do {
+            let existingPlaylists = try await musicLibraryService.dataProvider.getPlaylists()
+            print("Found \(existingPlaylists.count) existing playlists to remove")
+            
+            for playlist in existingPlaylists {
+                try await musicLibraryService.dataProvider.deletePlaylist(playlist)
+                print("Deleted playlist: \(playlist.name)")
+            }
+            
+            // Update in-memory state
+            await MainActor.run {
+                musicLibraryService.playlists.removeAll()
+            }
+            
+            print("All playlists deleted, now recreating...")
+        } catch {
+            print("Error while deleting existing playlists: \(error.localizedDescription)")
+        }
+        
+        // Create new playlists
+        await createDefaultPlaylists(musicLibraryService: musicLibraryService)
+    }
+    
     // Create default playlists from bundled resources
     static func createDefaultPlaylists(musicLibraryService: MusicLibraryService) async {
-        // Check if default playlists have already been created
-        if UserDefaults.standard.bool(forKey: defaultPlaylistsCreatedKey) {
-            print("Default playlists already created, skipping creation")
+        // Check if default playlists have already been created and are up to date
+        let currentVersion = UserDefaults.standard.integer(forKey: playlistVersionKey)
+        let playlistsCreated = UserDefaults.standard.bool(forKey: defaultPlaylistsCreatedKey)
+        
+        if playlistsCreated && currentVersion == currentPlaylistVersion {
+            print("Default playlists already created with current version, skipping creation")
             return
         }
+        
+        print("Creating default playlists (version \(currentPlaylistVersion))")
+        // If playlists exist but version is outdated, we'll recreate them
         
         print("Starting default playlists creation")
         
@@ -312,51 +351,100 @@ class DefaultPlaylistsManager {
                                      allMusicItems: musicItems,
                                      musicLibraryService: musicLibraryService)
         
-        // Mark that default playlists have been created
+        // Mark that default playlists have been created and update version
         UserDefaults.standard.set(true, forKey: defaultPlaylistsCreatedKey)
-        print("Default playlists creation completed and marked as done")
+        UserDefaults.standard.set(currentPlaylistVersion, forKey: playlistVersionKey)
+        print("Default playlists creation completed and marked as done (version \(currentPlaylistVersion))")
     }
     
     // Create music items from resource files
     private static func createMusicItemsFromResources(resourceURL: URL, musicLibraryService: MusicLibraryService) async -> [MusicItem] {
-        var musicItems: [MusicItem] = []
+    var musicItems: [MusicItem] = []
+    
+    // Combine all music files from all playlists to ensure we process all of them
+    let allMusicFiles = chinesePopMusic + englishPopMusic + nurseryRhymesMusic + animalSongsMusic + farmSongsMusic +
+                      lullabiesMusic + bedtimeMusic + christmasMusic + gentleSongsMusic +
+                      meditationMusic + natureMusic + goodbyeSongsMusic + shapeSongsMusic +
+                      studyMusic + workoutMusic + alphabetMusic + countingMusic
+    
+    print("Total music files to process: \(allMusicFiles.count)")
+    
+    // First try to look in the Resources directory
+    let resourcesDirectory = resourceURL.appendingPathComponent("Resources")
+    print("Looking for music files in: \(resourcesDirectory.path)")
+    
+    // Check if directory exists
+    var isDirectory: ObjCBool = false
+    let resourcesDirExists = FileManager.default.fileExists(atPath: resourcesDirectory.path, isDirectory: &isDirectory) && isDirectory.boolValue
+    
+    // Try multiple locations to find music files
+    for musicFile in allMusicFiles {
+        var fileFound = false
         
-        // Get all music files from resources
-        let resourcesDirectory = resourceURL.appendingPathComponent("Resources")
-        print("Looking for music files in: \(resourcesDirectory.path)")
+        // 1. Try Resources directory if it exists
+        if resourcesDirExists {
+            let filePath = resourcesDirectory.appendingPathComponent(musicFile)
+            if FileManager.default.fileExists(atPath: filePath.path) {
+                print("Found in Resources directory: \(musicFile)")
+                do {
+                    let musicItem = try await importResourceMusic(fileURL: filePath, musicLibraryService: musicLibraryService)
+                    musicItems.append(musicItem)
+                    fileFound = true
+                    print("Successfully imported from Resources: \(musicFile)")
+                } catch {
+                    print("Error importing from Resources \(musicFile): \(error.localizedDescription)")
+                }
+            }
+        }
         
-        // Check if directory exists
-        var isDirectory: ObjCBool = false
-        if !FileManager.default.fileExists(atPath: resourcesDirectory.path, isDirectory: &isDirectory) || !isDirectory.boolValue {
-            print("Resources directory does not exist at path: \(resourcesDirectory.path)")
-            
-            // Try to look directly in the bundle
-            print("Trying to access music files directly from bundle")
+        // 2. If not found in Resources, try directly in bundle
+        if !fileFound {
             let bundle = Bundle.main
-            // Combine all music files from all playlists
-            let allMusicFiles = chinesePopMusic + englishPopMusic + lullabiesMusic + bedtimeMusic + 
-                              meditationMusic + natureMusic + studyMusic + workoutMusic + 
-                              nurseryRhymesMusic + christmasMusic
+            let fileNameWithoutExt = URL(fileURLWithPath: musicFile).deletingPathExtension().lastPathComponent
+            let fileExt = URL(fileURLWithPath: musicFile).pathExtension
             
-            for musicFile in allMusicFiles {
-                let filename = URL(fileURLWithPath: musicFile).deletingPathExtension().lastPathComponent
-                let fileExtension = URL(fileURLWithPath: musicFile).pathExtension
-                if let fileURL = bundle.url(forResource: filename, withExtension: fileExtension) {
+            if let fileURL = bundle.url(forResource: fileNameWithoutExt, withExtension: fileExt) {
+                print("Found in bundle: \(musicFile)")
+                do {
+                    let musicItem = try await importResourceMusic(fileURL: fileURL, musicLibraryService: musicLibraryService)
+                    musicItems.append(musicItem)
+                    fileFound = true
+                    print("Successfully imported from bundle: \(musicFile)")
+                } catch {
+                    print("Error importing from bundle \(musicFile): \(error.localizedDescription)")
+                }
+            }
+        }
+        
+        // 3. If still not found, try with different extensions
+        if !fileFound {
+            let alternateExtensions = ["mp3", "flac", "m4a", "wav"]
+            let fileNameWithoutExt = URL(fileURLWithPath: musicFile).deletingPathExtension().lastPathComponent
+            
+            for ext in alternateExtensions {
+                if fileFound { break }
+                
+                if let fileURL = Bundle.main.url(forResource: fileNameWithoutExt, withExtension: ext) {
+                    print("Found with alternate extension: \(fileNameWithoutExt).\(ext)")
                     do {
                         let musicItem = try await importResourceMusic(fileURL: fileURL, musicLibraryService: musicLibraryService)
                         musicItems.append(musicItem)
-                        print("Successfully imported: \(musicFile)")
+                        fileFound = true
+                        print("Successfully imported with alternate extension: \(fileNameWithoutExt).\(ext)")
                     } catch {
-                        print("Error importing \(musicFile): \(error.localizedDescription)")
+                        print("Error importing with alternate extension \(fileNameWithoutExt).\(ext): \(error.localizedDescription)")
                     }
-                } else {
-                    print("Could not find resource: \(musicFile)")
                 }
             }
-            
-            return musicItems
         }
         
+        if !fileFound {
+            print("Could not find resource: \(musicFile) in any location")
+        }
+    }
+    
+    // Also scan the Resources directory for any additional files
+    if resourcesDirExists {
         do {
             let fileURLs = try FileManager.default.contentsOfDirectory(at: resourcesDirectory, 
                                                                        includingPropertiesForKeys: nil)
@@ -364,37 +452,43 @@ class DefaultPlaylistsManager {
             
             // Process each music file
             for fileURL in fileURLs {
-                if fileURL.pathExtension == "mp3" || fileURL.pathExtension == "flac" {
+                if fileURL.pathExtension == "mp3" || fileURL.pathExtension == "flac" || 
+                   fileURL.pathExtension == "m4a" || fileURL.pathExtension == "wav" {
                     do {
-                        // Copy the file to documents directory
                         let musicItem = try await importResourceMusic(fileURL: fileURL, musicLibraryService: musicLibraryService)
-                        musicItems.append(musicItem)
+                        // Check if we already have this file
+                        if !musicItems.contains(where: { $0.filePath == musicItem.filePath }) {
+                            musicItems.append(musicItem)
+                            print("Added additional file from Resources: \(fileURL.lastPathComponent)")
+                        }
                     } catch {
-                        print("Error importing resource music: \(error.localizedDescription)")
+                        print("Error importing additional resource music: \(error.localizedDescription)")
                     }
                 }
             }
         } catch {
             print("Error accessing resources directory: \(error.localizedDescription)")
         }
-        
-        return musicItems
     }
     
-    // Import a single music file from resources
-    private static func importResourceMusic(fileURL: URL, musicLibraryService: MusicLibraryService) async throws -> MusicItem {
-        let fileName = fileURL.lastPathComponent
-        let destinationURL = musicLibraryService.documentDirectory.appendingPathComponent(fileName)
-        
-        print("Importing music file: \(fileName)")
-        
-        // Check if file already exists in documents directory
-        if !FileManager.default.fileExists(atPath: destinationURL.path) {
-            print("Copying file to documents directory: \(destinationURL.path)")
-            try FileManager.default.copyItem(at: fileURL, to: destinationURL)
-        } else {
-            print("File already exists in documents directory")
-        }
+    print("Total music items created: \(musicItems.count)")
+    return musicItems
+}
+
+// Import a single music file from resources
+private static func importResourceMusic(fileURL: URL, musicLibraryService: MusicLibraryService) async throws -> MusicItem {
+    let fileName = fileURL.lastPathComponent
+    let destinationURL = musicLibraryService.documentDirectory.appendingPathComponent(fileName)
+    
+    print("Importing music file: \(fileName)")
+    
+    // Check if file already exists in documents directory
+    if !FileManager.default.fileExists(atPath: destinationURL.path) {
+        print("Copying file to documents directory: \(destinationURL.path)")
+        try FileManager.default.copyItem(at: fileURL, to: destinationURL)
+    } else {
+        print("File already exists in documents directory")
+    }
         
         // Extract metadata
         let asset = AVAsset(url: destinationURL)
@@ -431,29 +525,66 @@ class DefaultPlaylistsManager {
                 let itemBaseName = URL(fileURLWithPath: item.filePath).deletingPathExtension().lastPathComponent.lowercased()
                 let targetBaseName = URL(fileURLWithPath: musicFile).deletingPathExtension().lastPathComponent.lowercased()
                 
-                // Check if either contains the other or if they're similar enough
-                let itemContainsTarget = itemBaseName.contains(targetBaseName)
-                let targetContainsItem = targetBaseName.contains(itemBaseName)
+                // Print detailed debug info
+                print("Comparing: [\(itemBaseName)] with [\(targetBaseName)]")
                 
-                // For debugging
-                if itemContainsTarget || targetContainsItem {
-                    print("Match found: Item='\(itemBaseName)' Target='\(targetBaseName)'")
-                }
+                // Try different matching strategies
+                let exactMatch = itemBaseName == targetBaseName
+                let containsMatch = itemBaseName.contains(targetBaseName) || targetBaseName.contains(itemBaseName)
                 
-                return itemContainsTarget || targetContainsItem
+                return exactMatch || containsMatch
             }
             
             if let match = matchingItems.first {
-                print("Found matching music item: \(match.title) (\(match.filePath)) for \(musicFile)")
+                print("Found match for \(musicFile): \(match.title)")
                 categoryItems.append(match)
             } else {
-                print("No match found for: \(musicFile)")
+                print("No exact match found for: \(musicFile) - trying word matching")
+                
+                // Try a more lenient match if exact match fails
+                let partialMatchingItems = allMusicItems.filter { item in
+                    let itemBaseName = URL(fileURLWithPath: item.filePath).deletingPathExtension().lastPathComponent.lowercased()
+                    let targetBaseName = URL(fileURLWithPath: musicFile).deletingPathExtension().lastPathComponent.lowercased()
+                    
+                    // Split into words
+                    let itemWords = itemBaseName.split(separator: " ")
+                    let targetWords = targetBaseName.split(separator: " ")
+                    
+                    // Check if any significant word matches
+                    for targetWord in targetWords where targetWord.count > 2 {
+                        for itemWord in itemWords where itemWord.count > 2 {
+                            if itemWord.contains(targetWord) || targetWord.contains(itemWord) {
+                                print("Word match found: \(itemWord) contains \(targetWord)")
+                                return true
+                            }
+                        }
+                    }
+                    return false
+                }
+                
+                if let partialMatch = partialMatchingItems.first {
+                    print("Found partial match for \(musicFile): \(partialMatch.title)")
+                    categoryItems.append(partialMatch)
+                } else {
+                    // Last resort: just add any music item if we have no matches at all
+                    if categoryItems.isEmpty && !allMusicItems.isEmpty && allMusicItems.count > categoryItems.count {
+                        // Add a random item that hasn't been added to this category yet
+                        let availableItems = allMusicItems.filter { item in
+                            !categoryItems.contains { $0.id == item.id }
+                        }
+                        
+                        if let randomItem = availableItems.first {
+                            print("No match found for \(musicFile), adding random item: \(randomItem.title)")
+                            categoryItems.append(randomItem)
+                        } else {
+                            print("Still no match found for: \(musicFile) - this file may be missing")
+                        }
+                    } else {
+                        print("Still no match found for: \(musicFile) - this file may be missing")
+                    }
+                }
             }
         }
-        
-        print("Found \(categoryItems.count) matching items for \(name) playlist out of \(musicFiles.count) specified files")
-        
-        // Check if playlist already exists
         if !musicLibraryService.playlists.contains(where: { $0.name == name }) {
             print("Creating new playlist: \(name) with \(categoryItems.count) items")
             

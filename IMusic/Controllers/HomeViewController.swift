@@ -26,7 +26,10 @@ class HomeViewController: UIViewController {
     private var relaxPlaylists: [PlaylistItem] = []
     private var focusPlaylists: [PlaylistItem] = []
     
-    // 用于实现吸顶效果的属性
+    private var isFirstLoad = true
+    private var isLoading = false
+    
+    // Properties for implementing sticky header effect
     private var segmentControlTopConstraint: NSLayoutConstraint!
     private var segmentContainerHeight: CGFloat = 60
     private var segmentYThreshold: CGFloat = 0
@@ -50,7 +53,18 @@ class HomeViewController: UIViewController {
         view.translatesAutoresizingMaskIntoConstraints = false
         view.backgroundColor = .systemBackground
         view.layer.cornerRadius = 12
+        view.layer.masksToBounds = true
         view.clipsToBounds = true
+        return view
+    }()
+    
+    private lazy var gradientView: GradientView = {
+        let view = GradientView()
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.setGradient(colors: [
+            UIColor.clear.cgColor,
+            UIColor.black.withAlphaComponent(0.7).cgColor
+        ], locations: [0.5, 1.0])
         return view
     }()
     
@@ -96,9 +110,6 @@ class HomeViewController: UIViewController {
         segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.darkGray], for: .normal)
         segmentedControl.setTitleTextAttributes([.foregroundColor: UIColor.white], for: .selected)
         segmentedControl.setDividerImage(UIImage(), forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
-//        segmentedControl.setBackgroundImage(UIImage(color: .white), for: .normal, barMetrics: .default)
-//        segmentedControl.setBackgroundImage(UIImage(color: .green), for: .selected, barMetrics: .default)
-//        segmentedControl.setBackgroundImage(UIImage(color: .white), for: .highlighted, barMetrics: .default)
         segmentedControl.addTarget(self, action: #selector(categoryChanged(_:)), for: .valueChanged)
         return segmentedControl
     }()
@@ -111,7 +122,7 @@ class HomeViewController: UIViewController {
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.backgroundColor = .systemBackground
+        collectionView.backgroundColor = .clear
         collectionView.isScrollEnabled = false
         collectionView.delegate = self
         collectionView.dataSource = self
@@ -127,18 +138,36 @@ class HomeViewController: UIViewController {
         return view
     }()
     
+    private lazy var loadingIndicator: UIActivityIndicatorView = {
+        let indicator = UIActivityIndicatorView(style: .large)
+        indicator.translatesAutoresizingMaskIntoConstraints = false
+        indicator.hidesWhenStopped = true
+        indicator.color = UIColor(red: 95/255, green: 186/255, blue: 125/255, alpha: 1.0) // Green
+        return indicator
+    }()
+    
     // MARK: - Lifecycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         
+        isFirstLoad = true
+        isLoading = true
+        
+        scrollView.isHidden = true
+        segmentContainerView.isHidden = true
+        
         scrollView.delegate = self
         
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(musicLibraryDidLoad), 
-                                               name: NSNotification.Name("MusicLibraryDidLoadNotification"), 
-                                               object: nil)
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(musicLibraryDidLoad), 
+            name: NSNotification.Name("MusicLibraryDidLoadNotification"), 
+            object: nil
+        )
+        
+        view.bringSubviewToFront(loadingIndicator)
         
         loadData()
     }
@@ -151,8 +180,12 @@ class HomeViewController: UIViewController {
     }
     
     @objc private func musicLibraryDidLoad() {
+        print("Music library did load notification received")
+        
         DispatchQueue.main.async { [weak self] in
-            self?.loadData()
+            guard let self = self else { return }
+            
+            self.loadData()
         }
     }
     
@@ -161,12 +194,12 @@ class HomeViewController: UIViewController {
     private func setupUI() {
         view.backgroundColor = .systemBackground
         
-        // Add UI components to view
         view.addSubview(scrollView)
         scrollView.addSubview(contentView)
         
         contentView.addSubview(featuredView)
         featuredView.addSubview(featuredImageView)
+        featuredView.addSubview(gradientView)
         featuredView.addSubview(featuredTitleLabel)
         featuredView.addSubview(featuredArtistLabel)
         
@@ -176,11 +209,12 @@ class HomeViewController: UIViewController {
         contentView.addSubview(playlistCollectionView)
         
         view.addSubview(miniPlayerView)
+        view.addSubview(loadingIndicator)
         
         // Calculate threshold position for segment control sticky behavior
-        segmentYThreshold = LayoutMetrics.featuredViewHeight + LayoutMetrics.standardMargin
+        // Add standardMargin to ensure proper spacing between featuredView and segmentContainerView
+        segmentYThreshold = LayoutMetrics.featuredViewHeight + LayoutMetrics.standardMargin * 2
         
-        // Create and store top constraint for dynamic adjustment
         segmentControlTopConstraint = segmentContainerView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: segmentYThreshold)
         segmentControlTopConstraint.isActive = true
         
@@ -189,14 +223,14 @@ class HomeViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.bottomAnchor.constraint(equalTo: miniPlayerView.topAnchor),
+            scrollView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
             
             // Content view
             contentView.topAnchor.constraint(equalTo: scrollView.topAnchor),
             contentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor),
             contentView.trailingAnchor.constraint(equalTo: scrollView.trailingAnchor),
-            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             contentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor),
+            contentView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor),
             
             // Featured view
             featuredView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: LayoutMetrics.standardMargin),
@@ -204,11 +238,17 @@ class HomeViewController: UIViewController {
             featuredView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -LayoutMetrics.standardMargin),
             featuredView.heightAnchor.constraint(equalToConstant: LayoutMetrics.featuredViewHeight),
             
-            // Featured image view
+            // Featured image view - fill the entire featured view
             featuredImageView.topAnchor.constraint(equalTo: featuredView.topAnchor),
             featuredImageView.leadingAnchor.constraint(equalTo: featuredView.leadingAnchor),
             featuredImageView.trailingAnchor.constraint(equalTo: featuredView.trailingAnchor),
-            featuredImageView.bottomAnchor.constraint(equalTo: featuredView.bottomAnchor, constant: -LayoutMetrics.standardMargin),
+            featuredImageView.bottomAnchor.constraint(equalTo: featuredView.bottomAnchor),
+            
+            // Gradient view for text readability
+            gradientView.leadingAnchor.constraint(equalTo: featuredView.leadingAnchor),
+            gradientView.trailingAnchor.constraint(equalTo: featuredView.trailingAnchor),
+            gradientView.bottomAnchor.constraint(equalTo: featuredView.bottomAnchor),
+            gradientView.heightAnchor.constraint(equalTo: featuredView.heightAnchor, multiplier: 0.5),
             
             // Featured title label
             featuredTitleLabel.leadingAnchor.constraint(equalTo: featuredView.leadingAnchor, constant: 16),
@@ -217,7 +257,7 @@ class HomeViewController: UIViewController {
             
             // Featured artist label
             featuredArtistLabel.leadingAnchor.constraint(equalTo: featuredView.leadingAnchor, constant: 16),
-            featuredArtistLabel.bottomAnchor.constraint(equalTo: featuredView.bottomAnchor, constant: -16-LayoutMetrics.standardMargin),
+            featuredArtistLabel.bottomAnchor.constraint(equalTo: featuredView.bottomAnchor, constant: -16),
             featuredArtistLabel.trailingAnchor.constraint(equalTo: featuredView.trailingAnchor, constant: -16),
             
             // Segment container view
@@ -226,86 +266,107 @@ class HomeViewController: UIViewController {
             segmentContainerView.heightAnchor.constraint(equalToConstant: LayoutMetrics.segmentContainerHeight),
             
             // Category segmented control
-            categorySegmentedControl.centerYAnchor.constraint(equalTo: segmentContainerView.centerYAnchor),
             categorySegmentedControl.leadingAnchor.constraint(equalTo: segmentContainerView.leadingAnchor, constant: LayoutMetrics.standardMargin),
             categorySegmentedControl.trailingAnchor.constraint(equalTo: segmentContainerView.trailingAnchor, constant: -LayoutMetrics.standardMargin),
-            categorySegmentedControl.heightAnchor.constraint(equalToConstant: 40),
+            categorySegmentedControl.centerYAnchor.constraint(equalTo: segmentContainerView.centerYAnchor),
+            categorySegmentedControl.heightAnchor.constraint(equalToConstant: 36),
             
             // Playlist collection view
-            playlistCollectionView.topAnchor.constraint(equalTo: featuredView.bottomAnchor, constant: LayoutMetrics.segmentContainerHeight + LayoutMetrics.standardMargin),
+            playlistCollectionView.topAnchor.constraint(equalTo: featuredView.bottomAnchor, constant: LayoutMetrics.standardMargin * 2 + LayoutMetrics.segmentContainerHeight),
             playlistCollectionView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: LayoutMetrics.standardMargin),
             playlistCollectionView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -LayoutMetrics.standardMargin),
-            // Use adaptive height instead of fixed height
-            playlistCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -LayoutMetrics.standardMargin),
+            // Add extra bottom padding to avoid content being hidden by mini player
+            playlistCollectionView.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -(LayoutMetrics.standardMargin + 60)),
             
             // Mini player view
             miniPlayerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             miniPlayerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
             miniPlayerView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
-            miniPlayerView.heightAnchor.constraint(equalToConstant: 60)
+            miniPlayerView.heightAnchor.constraint(equalToConstant: 60),
+            
+            // Loading indicator
+            loadingIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            loadingIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
         
-        // Add tap gesture to featured view
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(featuredViewTapped))
         featuredView.addGestureRecognizer(tapGesture)
     }
     
     // MARK: - Data Loading
     
+    private func showLoadingIndicator() {
+        view.bringSubviewToFront(loadingIndicator)
+        
+        loadingIndicator.startAnimating()
+        scrollView.isHidden = true
+        segmentContainerView.isHidden = true
+        miniPlayerView.isHidden = true
+        
+        print("Loading indicator shown")
+    }
+    
+    private func hideLoadingIndicator() {
+        loadingIndicator.stopAnimating()
+        scrollView.isHidden = false
+        segmentContainerView.isHidden = false
+        
+        if musicPlayerService.currentItem != nil {
+            updateMiniPlayerView()
+        }
+        
+        isLoading = false
+        isFirstLoad = false
+        
+        print("Loading indicator hidden")
+    }
+    
     private func loadData() {
-        // Get all playlists from the music library service
+        if isFirstLoad || isLoading {
+            showLoadingIndicator()
+        }
+        
         let playlists = musicLibraryService.playlists
+        print("Found \(playlists.count) playlists")
         
-        print("HomeViewController loadData: found \(playlists.count) playlists")
-        
-        // Clear existing categorized playlists
         recommendedPlaylists.removeAll()
         sleepPlaylists.removeAll()
         relaxPlaylists.removeAll()
         focusPlaylists.removeAll()
         
-        // Set featured playlist
         if !playlists.isEmpty {
             let randomIndex = Int.random(in: 0..<playlists.count)
             featuredPlaylist = playlists[randomIndex]
             updateFeaturedView()
         }
         
-        print("Categorizing \(playlists.count) playlists")
-        
-        // Categorize playlists based on their category field
+        // Categorize playlists based on their category
         for playlist in playlists {
-            print("Processing playlist: \(playlist.name) with \(playlist.musicItems.count) items, category: \(playlist.category)")
-            
             // Check the playlist's category
             switch playlist.category {
             case DefaultPlaylistsManager.recommendedCategory:
                 recommendedPlaylists.append(playlist)
-                print("Added \(playlist.name) to recommended category")
             case DefaultPlaylistsManager.sleepCategory:
                 sleepPlaylists.append(playlist)
-                print("Added \(playlist.name) to sleep category")
             case DefaultPlaylistsManager.relaxCategory:
                 relaxPlaylists.append(playlist)
-                print("Added \(playlist.name) to relax category")
             case DefaultPlaylistsManager.focusCategory:
                 focusPlaylists.append(playlist)
-                print("Added \(playlist.name) to focus category")
             case "":
-                // For playlists without a category, add to recommended
+                // For playlists without a category, add to recommended category
                 recommendedPlaylists.append(playlist)
-                print("Added \(playlist.name) to recommended category (no category specified)")
             default:
-                // For playlists with unknown categories, add to recommended
+                // For playlists with unknown categories, add to recommended category
                 recommendedPlaylists.append(playlist)
-                print("Added \(playlist.name) to recommended category (unknown category: \(playlist.category))")
             }
         }
         
-        // Reload collection view and update layout
+        if isFirstLoad || isLoading {
+            hideLoadingIndicator()
+        }
+        
         playlistCollectionView.reloadData()
         
-        // Delay execution to ensure collection view has completed layout calculations
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             self?.updateCollectionViewHeight()
         }
@@ -358,20 +419,22 @@ class HomeViewController: UIViewController {
         
         featuredTitleLabel.text = playlist.name
         
-        // Get first music item in playlist for artist name
-        if let firstItem = playlist.musicItems.first {
-            featuredArtistLabel.text = firstItem.artist ?? "Unknown Artist"
+        // Set artist name if available, otherwise use number of tracks
+        if let firstItem = playlist.musicItems.first, let artist = firstItem.artist {
+            featuredArtistLabel.text = artist
         } else {
-            featuredArtistLabel.text = "Various Artists"
+            let trackCount = playlist.musicItems.count
+            featuredArtistLabel.text = "\(trackCount) \(trackCount == 1 ? "track" : "tracks")"
         }
         
-        // Set a placeholder image or load actual artwork
+        // Set featured image if available
         if let firstItem = playlist.musicItems.first, let artworkData = firstItem.artworkData, let image = UIImage(data: artworkData) {
             featuredImageView.image = image
         } else {
-            featuredImageView.backgroundColor = .systemPurple
+            // Use a placeholder color if no artwork is available
             featuredImageView.image = UIImage(systemName: "music.note")?.withRenderingMode(.alwaysTemplate)
             featuredImageView.tintColor = .white
+            featuredImageView.backgroundColor = randomColor()
         }
     }
     
@@ -389,7 +452,7 @@ class HomeViewController: UIViewController {
     @objc private func categoryChanged(_ sender: UISegmentedControl) {
         playlistCollectionView.reloadData()
         
-        // Delay execution to ensure collection view has completed reloading
+        // Update collection view height after category change
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) { [weak self] in
             self?.updateCollectionViewHeight()
         }
@@ -424,8 +487,8 @@ class HomeViewController: UIViewController {
     }
 }
 
-// MARK: - UICollectionViewDelegate, UICollectionViewDataSource
-extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSource {
+// MARK: - UICollectionViewDataSource
+extension HomeViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return getCurrentPlaylists().count
     }
@@ -443,7 +506,10 @@ extension HomeViewController: UICollectionViewDelegate, UICollectionViewDataSour
         
         return cell
     }
-    
+}
+
+// MARK: - UICollectionViewDelegate
+extension HomeViewController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let playlists = getCurrentPlaylists()
         if indexPath.item < playlists.count {

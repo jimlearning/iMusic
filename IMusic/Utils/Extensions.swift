@@ -42,6 +42,37 @@ extension UIImage {
     }
 }
 
+let predefinedColors: [UIColor] = [
+    UIColor(red: 0.906, green: 0.298, blue: 0.235, alpha: 1.0),  // 红色
+    UIColor(red: 0.204, green: 0.596, blue: 0.859, alpha: 1.0),  // 蓝色
+    UIColor(red: 0.180, green: 0.800, blue: 0.443, alpha: 1.0),  // 绿色
+    UIColor(red: 0.945, green: 0.769, blue: 0.059, alpha: 1.0),  // 黄色
+    UIColor(red: 0.608, green: 0.349, blue: 0.714, alpha: 1.0),  // 紫色
+    UIColor(red: 1.000, green: 0.596, blue: 0.000, alpha: 1.0),  // 橙色
+    UIColor(red: 0.161, green: 0.502, blue: 0.725, alpha: 1.0),  // 深蓝色
+    UIColor(red: 0.827, green: 0.329, blue: 0.510, alpha: 1.0),  // 粉色
+    UIColor(red: 0.957, green: 0.263, blue: 0.475, alpha: 1.0),  // 鲜粉色
+    UIColor(red: 0.153, green: 0.682, blue: 0.376, alpha: 1.0)   // 翠绿色
+]
+
+func randomColor() -> UIColor {
+    
+    // Generate a unique index from 0-9 based on self's hash value
+    let colorIndex = Int.random(in: 0 ..< predefinedColors.count)
+    
+    return predefinedColors[colorIndex]
+}
+
+extension NSObject {
+    func associatedRandomColor() -> UIColor {
+        // Generate a unique index from 0-9 based on self's hash value
+        let hashValue = abs(ObjectIdentifier(self).hashValue)
+        let colorIndex = hashValue % predefinedColors.count
+        
+        return predefinedColors[colorIndex]
+    }
+}
+
 // MARK: - TimeInterval Extensions
 extension TimeInterval {
     func formatAsPlaybackTime() -> String {

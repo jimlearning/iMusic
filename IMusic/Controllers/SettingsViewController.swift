@@ -62,11 +62,13 @@ class SettingsViewController: UIViewController {
     enum LibraryRow: Int, CaseIterable {
         case sortBy
         case clearCache
+        case recreatePlaylists
         
         var title: String {
             switch self {
             case .sortBy: return "Sort By"
             case .clearCache: return "Clear Cache"
+            case .recreatePlaylists: return "Recreate All Playlists"
             }
         }
     }
@@ -233,6 +235,34 @@ class SettingsViewController: UIViewController {
         )
     }
     
+    private func recreatePlaylists() {
+        showConfirmationAlert(
+            title: "Recreate All Playlists",
+            message: "This will delete and recreate all default playlists. Your music files will not be affected. This may help if playlists are not showing music correctly. Continue?",
+            confirmAction: {
+                // Show activity indicator
+                let activityIndicator = UIActivityIndicatorView(style: .large)
+                activityIndicator.center = self.view.center
+                activityIndicator.startAnimating()
+                self.view.addSubview(activityIndicator)
+                
+                // Force recreate all playlists
+                Task {
+                    await DefaultPlaylistsManager.forceRecreateAllPlaylists(musicLibraryService: self.musicLibraryService)
+                    
+                    // Reload data in main thread
+                    await MainActor.run {
+                        activityIndicator.stopAnimating()
+                        activityIndicator.removeFromSuperview()
+                        
+                        // Show success message
+                        self.showAlert(title: "Success", message: "All playlists have been recreated successfully.")
+                    }
+                }
+            }
+        )
+    }
+    
     private func showNowPlayingView(for item: MusicItem) {
         let nowPlayingVC = NowPlayingViewController()
         nowPlayingVC.musicPlayerService = musicPlayerService
@@ -329,6 +359,12 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 cell.textLabel?.text = rowType.title
                 cell.textLabel?.textColor = .systemRed
                 return cell
+                
+            case .recreatePlaylists:
+                let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
+                cell.textLabel?.text = rowType.title
+                cell.textLabel?.textColor = .systemBlue
+                return cell
             }
             
         case .about:
@@ -389,6 +425,9 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
                 
             case .clearCache:
                 clearCache()
+                
+            case .recreatePlaylists:
+                recreatePlaylists()
             }
             
         case .about:
