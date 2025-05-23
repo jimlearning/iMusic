@@ -8,6 +8,7 @@ class NowPlayingViewController: UIViewController {
     var musicPlayerService: MusicPlayerService!
     
     private var updateTimer: Timer?
+    private var interactiveDismissController: InteractiveDismissController?
     
     // UI Components
     private lazy var artworkImageView: UIImageView = {
@@ -16,7 +17,7 @@ class NowPlayingViewController: UIViewController {
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
-        imageView.image = UIImage.defaultArtwork
+        imageView.image = UIImage.iconDefaultArtwork
         return imageView
     }()
     
@@ -177,6 +178,7 @@ class NowPlayingViewController: UIViewController {
         super.viewDidLoad()
         setupUI()
         updateUI()
+        setupCustomTransition()
         
         // Register for track changed notifications
         NotificationCenter.default.addObserver(
@@ -184,6 +186,16 @@ class NowPlayingViewController: UIViewController {
             selector: #selector(trackChanged),
             name: MusicPlayerService.trackChangedNotification,
             object: nil
+        )
+    }
+    
+    private func setupCustomTransition() {
+        // Setup interactive dismiss controller with custom configuration
+        interactiveDismissController = addInteractiveDismiss(
+            progressThreshold: 0.3,
+            velocityThreshold: 1000,
+            allowTopEdgePan: true,
+            allowLeftEdgePan: true
         )
     }
     
@@ -316,7 +328,7 @@ class NowPlayingViewController: UIViewController {
         if let artworkData = currentItem.artworkData, let image = UIImage(data: artworkData) {
             artworkImageView.image = image
         } else {
-            artworkImageView.image = UIImage.defaultArtwork
+            artworkImageView.image = UIImage.iconDefaultArtwork
         }
         
         // Update time labels
@@ -443,4 +455,11 @@ class NowPlayingViewController: UIViewController {
         print("Track changed notification received in NowPlayingViewController")
         updateUI()
     }
+    
+    // MARK: - Interactive Transition
+    
+
+
 }
+
+

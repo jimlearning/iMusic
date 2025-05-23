@@ -89,6 +89,7 @@ class SettingsViewController: UIViewController, MiniPlayerUpdatable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        setupNavigationBar()
         setupUI()
         loadSettings()
     }
@@ -99,6 +100,12 @@ class SettingsViewController: UIViewController, MiniPlayerUpdatable {
     }
     
     // MARK: - UI Setup
+
+    private func setupNavigationBar() {
+        title = "Settings"
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
     
     private func setupUI() {
         title = "Settings"

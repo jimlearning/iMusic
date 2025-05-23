@@ -29,7 +29,7 @@ class PlaylistsViewController: UIViewController, MiniPlayerUpdatable {
         stackView.spacing = 16
         stackView.alignment = .center
         
-        let imageView = UIImageView(image: UIImage.defaultAlbumArtwork)
+        let imageView = UIImageView(image: UIImage.iconDefaultAlbumSmall)
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFit
         imageView.tintColor = .appSubtext
@@ -84,8 +84,8 @@ class PlaylistsViewController: UIViewController, MiniPlayerUpdatable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         setupNavigationBar()
+        setupUI()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -95,6 +95,15 @@ class PlaylistsViewController: UIViewController, MiniPlayerUpdatable {
     }
     
     // MARK: - UI Setup
+        
+    private func setupNavigationBar() {
+        title = "Playlists"
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createPlaylistTapped))
+        navigationItem.rightBarButtonItem = addButton
+    }
     
     private func setupUI() {
         view.backgroundColor = .appBackground
@@ -123,15 +132,6 @@ class PlaylistsViewController: UIViewController, MiniPlayerUpdatable {
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
-    }
-    
-    private func setupNavigationBar() {
-        title = "Playlists"
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(createPlaylistTapped))
-        navigationItem.rightBarButtonItem = addButton
     }
     
     // MARK: - Data Loading

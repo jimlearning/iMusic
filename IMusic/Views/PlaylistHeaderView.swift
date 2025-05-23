@@ -11,7 +11,7 @@ class PlaylistHeaderView: UIView {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 8
         imageView.backgroundColor = .systemGray5
-        imageView.image = UIImage.defaultAlbumArtwork
+        imageView.image = UIImage.iconDefaultAlbumSmall
         imageView.tintColor = .appPrimary
         return imageView
     }()
@@ -155,7 +155,7 @@ class PlaylistHeaderView: UIView {
             iconImageView.backgroundColor = randomPredefinedColor()
         }
         
-        iconImageView.image = UIImage.defaultAlbumArtwork
+        iconImageView.image = UIImage.iconDefaultAlbumSmall
         iconImageView.tintColor = .white
     }
 }

@@ -18,7 +18,7 @@ class MiniPlayerView: UIView {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 4
-        imageView.image = UIImage.defaultArtwork
+        imageView.image = UIImage.iconDefaultArtwork
         return imageView
     }()
     
@@ -122,7 +122,7 @@ class MiniPlayerView: UIView {
         if let artworkData = item.artworkData, let image = UIImage(data: artworkData) {
             artworkImageView.image = image
         } else {
-            artworkImageView.image = UIImage.defaultArtwork
+            artworkImageView.image = UIImage.iconDefaultArtwork
         }
         
         let isPlaying = playbackState == .playing

@@ -116,6 +116,7 @@
 		386957242DE096F5008CA057 /* The Farmer In The Dell 237.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 386957152DE096F5008CA057 /* The Farmer In The Dell 237.mp3 */; };
 		386957262DE09B36008CA057 /* MusicPreferencesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386957252DE09B36008CA057 /* MusicPreferencesViewController.swift */; };
 		386957292DE0AC79008CA057 /* MiniPlayerUpdatable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386957272DE0AC79008CA057 /* MiniPlayerUpdatable.swift */; };
+		3869572B2DE0C688008CA057 /* InteractiveDismissController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3869572A2DE0C688008CA057 /* InteractiveDismissController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -230,6 +231,7 @@
 		386957152DE096F5008CA057 /* The Farmer In The Dell 237.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "The Farmer In The Dell 237.mp3"; sourceTree = "<group>"; };
 		386957252DE09B36008CA057 /* MusicPreferencesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MusicPreferencesViewController.swift; sourceTree = "<group>"; };
 		386957272DE0AC79008CA057 /* MiniPlayerUpdatable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MiniPlayerUpdatable.swift; sourceTree = "<group>"; };
+		3869572A2DE0C688008CA057 /* InteractiveDismissController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = InteractiveDismissController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -322,6 +324,7 @@
 			children = (
 				3869565F2DDF053D008CA057 /* Extensions.swift */,
 				386956602DDF053D008CA057 /* FileManager+Extensions.swift */,
+				3869572A2DE0C688008CA057 /* InteractiveDismissController.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -579,6 +582,7 @@
 				386957262DE09B36008CA057 /* MusicPreferencesViewController.swift in Sources */,
 				386957292DE0AC79008CA057 /* MiniPlayerUpdatable.swift in Sources */,
 				386956722DDF053D008CA057 /* LibraryViewController.swift in Sources */,
+				3869572B2DE0C688008CA057 /* InteractiveDismissController.swift in Sources */,
 				386956732DDF053D008CA057 /* MainTabBarController.swift in Sources */,
 				386956762DDF053D008CA057 /* PlaylistDetailViewController.swift in Sources */,
 				386956862DDF3B21008CA057 /* LoginViewController.swift in Sources */,

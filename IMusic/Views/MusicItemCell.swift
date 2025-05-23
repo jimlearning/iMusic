@@ -10,7 +10,7 @@ class MusicItemCell: UITableViewCell {
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 6
-        imageView.image = UIImage.defaultArtwork
+        imageView.image = UIImage.iconDefaultArtwork
         return imageView
     }()
     
@@ -52,7 +52,7 @@ class MusicItemCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        artworkImageView.image = UIImage.defaultArtwork
+        artworkImageView.image = UIImage.iconDefaultArtwork
         titleLabel.text = nil
         artistLabel.text = nil
         durationLabel.text = nil
@@ -97,7 +97,7 @@ class MusicItemCell: UITableViewCell {
         if let artworkData = item.artworkData, let image = UIImage(data: artworkData) {
             artworkImageView.image = image
         } else {
-            artworkImageView.image = UIImage.defaultArtwork
+            artworkImageView.image = UIImage.iconDefaultArtwork
         }
     }
 }

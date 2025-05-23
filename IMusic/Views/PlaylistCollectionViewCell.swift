@@ -131,7 +131,7 @@ class PlaylistCollectionViewCell: UICollectionViewCell {
             imageView.backgroundColor = randomPredefinedColor()
         }
         
-        imageView.image = UIImage(systemName: "music.note")?.withRenderingMode(.alwaysTemplate)
+        imageView.image = UIImage.iconDefaultAlbum
         imageView.tintColor = .white
     }
     

@@ -12,8 +12,6 @@ extension UIColor {
 
 // MARK: - UIImage Extensions
 extension UIImage {
-//    static let defaultArtwork = UIImage(named: "DefaultArtwork") ?? UIImage(systemName: "music.note")!
-    static let defaultAlbumArtwork = UIImage(named: "DefaultAlbumArtwork")
     static let playIcon = UIImage(systemName: "play.fill")!
     static let pauseIcon = UIImage(systemName: "pause.fill")!
     static let skipForwardIcon = UIImage(systemName: "forward.fill")!

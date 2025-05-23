@@ -144,8 +144,8 @@ class HomeViewController: UIViewController, MiniPlayerUpdatable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         setupNavigationBar()
+        setupUI()
         
         scrollView.delegate = self
         
@@ -220,6 +220,12 @@ class HomeViewController: UIViewController, MiniPlayerUpdatable {
     }
     
     // MARK: - UI Setup
+
+    private func setupNavigationBar() {
+        title = "主页"
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
     
     private func setupUI() {
         view.backgroundColor = .systemBackground
@@ -316,12 +322,6 @@ class HomeViewController: UIViewController, MiniPlayerUpdatable {
         
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(featuredViewTapped))
         featuredView.addGestureRecognizer(tapGesture)
-    }
-
-    private func setupNavigationBar() {
-        title = "主页"
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     // MARK: - Data Loading
@@ -446,7 +446,7 @@ class HomeViewController: UIViewController, MiniPlayerUpdatable {
             featuredImageView.contentMode = .scaleAspectFill
         } else {
             // Use a placeholder color based on playlist name
-            featuredImageView.image = UIImage(systemName: "music.note")?.withRenderingMode(.alwaysTemplate)
+            featuredImageView.image = UIImage.iconDefaultAlbum
             featuredImageView.contentMode = .scaleAspectFit
             featuredImageView.tintColor = .white
             featuredImageView.backgroundColor = colorBasedOnString(playlist.name)

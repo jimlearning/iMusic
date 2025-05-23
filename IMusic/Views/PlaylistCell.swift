@@ -11,7 +11,7 @@ class PlaylistCell: UITableViewCell {
         imageView.clipsToBounds = true
         imageView.layer.cornerRadius = 6
         imageView.backgroundColor = .systemGray5
-        imageView.image = UIImage.defaultAlbumArtwork
+        imageView.image = UIImage.iconDefaultAlbum
         imageView.tintColor = .appPrimary
         return imageView
     }()
@@ -113,7 +113,7 @@ class PlaylistCell: UITableViewCell {
             iconImageView.backgroundColor = randomPredefinedColor()
         }
         
-        iconImageView.image = UIImage.defaultAlbumArtwork
+        iconImageView.image = UIImage.iconDefaultAlbumSmall
         iconImageView.tintColor = .white
     }
 }

@@ -86,8 +86,8 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        setupUI()
         setupNavigationBar()
+        setupUI()
         loadMusicLibrary()
     }
     
@@ -97,6 +97,24 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
     }
     
     // MARK: - UI Setup
+
+    private func setupNavigationBar() {
+        title = "Library"
+        
+        navigationController?.navigationBar.prefersLargeTitles = true
+        
+        let importButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(importMusicTapped))
+        let sortButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
+        
+        navigationItem.rightBarButtonItems = [importButton, sortButton]
+        
+        let searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.searchBar.placeholder = "Search Music"
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+    }
     
     private func setupUI() {
         view.backgroundColor = .appBackground
@@ -125,24 +143,6 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
             activityIndicator.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             activityIndicator.centerYAnchor.constraint(equalTo: view.centerYAnchor)
         ])
-    }
-    
-    private func setupNavigationBar() {
-        title = "Library"
-        
-        navigationController?.navigationBar.prefersLargeTitles = true
-        
-        let importButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(importMusicTapped))
-        let sortButton = UIBarButtonItem(image: UIImage(systemName: "arrow.up.arrow.down"), style: .plain, target: self, action: #selector(sortButtonTapped))
-        
-        navigationItem.rightBarButtonItems = [importButton, sortButton]
-        
-        let searchController = UISearchController(searchResultsController: nil)
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search Music"
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
     }
     
     // MARK: - Data Loading
