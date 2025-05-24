@@ -6,6 +6,7 @@ class PlaylistDetailViewController: UIViewController, MiniPlayerUpdatable {
     var musicLibraryService: MusicLibraryService!
     var musicPlayerService: MusicPlayerService!
     var playlist: PlaylistItem!
+    var isFavoritesPlaylist: Bool = false
     
     private var musicItems: [MusicItem] = []
     
@@ -36,7 +37,7 @@ class PlaylistDetailViewController: UIViewController, MiniPlayerUpdatable {
     private lazy var emptyStateLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "This playlist is empty"
+        label.text = "您的收藏是空的"
         label.textColor = .appSubtext
         label.textAlignment = .center
         label.font = UIFont.systemFont(ofSize: 16)
@@ -102,14 +103,36 @@ class PlaylistDetailViewController: UIViewController, MiniPlayerUpdatable {
         title = playlist.name
         headerView.configure(with: playlist)
         updateEmptyState()
+        
+        // Hide add button for favorites playlist
+        navigationItem.rightBarButtonItem?.isEnabled = !isFavoritesPlaylist
     }
     
     private func refreshPlaylist() {
-        if let updatedPlaylist = musicLibraryService.playlists.first(where: { $0.id == playlist.id }) {
-            playlist = updatedPlaylist
-            musicItems = playlist.musicItems
-            updateUI()
-            tableView.reloadData()
+        Task {
+            do {
+                if isFavoritesPlaylist {
+                    let favorites = try await musicLibraryService.getFavorites()
+                    await MainActor.run {
+                        self.musicItems = favorites
+                        // Update the virtual playlist
+                        self.playlist = PlaylistItem(name: "收藏", musicItems: favorites)
+                        self.updateUI()
+                        self.tableView.reloadData()
+                        self.updateEmptyState()
+                    }
+                } else if let updatedPlaylist = musicLibraryService.playlists.first(where: { $0.id == playlist.id }) {
+                    await MainActor.run {
+                        self.playlist = updatedPlaylist
+                        self.musicItems = updatedPlaylist.musicItems
+                        self.updateUI()
+                        self.tableView.reloadData()
+                        self.updateEmptyState()
+                    }
+                }
+            } catch {
+                print("Error refreshing playlist: \(error)")
+            }
         }
     }
     
@@ -182,6 +205,41 @@ extension PlaylistDetailViewController: UITableViewDelegate, UITableViewDataSour
         return cell
     }
     
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let item = musicItems[indexPath.row]
+        
+        let favoriteAction = UIContextualAction(style: .normal, title: item.isFavorite ? "取消收藏" : "收藏") { [weak self] (_, _, completion) in
+            guard let self = self else { return }
+            
+            Task {
+                do {
+                    let updatedItem = try await self.musicLibraryService.toggleFavorite(item)
+                    await MainActor.run {
+                        // Update the item in the list
+                        if let index = self.musicItems.firstIndex(where: { $0.id == updatedItem.id }) {
+                            self.musicItems[index] = updatedItem
+                        }
+                        tableView.reloadRows(at: [indexPath], with: .automatic)
+                        
+                        // If this is the favorites playlist and we unfavorited an item, refresh the playlist
+                        if self.isFavoritesPlaylist && !updatedItem.isFavorite {
+                            self.refreshPlaylist()
+                        }
+                    }
+                } catch {
+                    print("Error toggling favorite: \(error)")
+                }
+            }
+            
+            completion(true)
+        }
+        
+        favoriteAction.backgroundColor = item.isFavorite ? .systemGray : .systemRed
+        favoriteAction.image = UIImage(systemName: item.isFavorite ? "heart.slash.fill" : "heart.fill")
+        
+        return UISwipeActionsConfiguration(actions: [favoriteAction])
+    }
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         tableView.deselectRow(at: indexPath, animated: true)
         
@@ -192,26 +250,47 @@ extension PlaylistDetailViewController: UITableViewDelegate, UITableViewDataSour
     }
     
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let removeAction = UIContextualAction(style: .destructive, title: "Remove") { [weak self] (_, _, completion) in
-            guard let self = self else { return }
-            
-            let item = self.musicItems[indexPath.row]
-            
-            Task {
-                do {
-                    try await self.musicLibraryService.removeFromPlaylist(item, playlist: self.playlist)
-                    self.refreshPlaylist()
-                } catch {
-                    await MainActor.run {
-                        self.showAlert(title: "Error", message: "Failed to remove from playlist: \(error.localizedDescription)")
+        let item = self.musicItems[indexPath.row]
+        
+        if isFavoritesPlaylist {
+            let unfavoriteAction = UIContextualAction(style: .destructive, title: "取消收藏") { [weak self] (_, _, completion) in
+                guard let self = self else { return }
+                
+                Task {
+                    do {
+                        _ = try await self.musicLibraryService.toggleFavorite(item)
+                        self.refreshPlaylist()
+                    } catch {
+                        await MainActor.run {
+                            self.showAlert(title: "Error", message: "Failed to unfavorite: \(error.localizedDescription)")
+                        }
                     }
                 }
+                
+                completion(true)
+            }
+            unfavoriteAction.backgroundColor = .systemRed
+            return UISwipeActionsConfiguration(actions: [unfavoriteAction])
+        } else {
+            let removeAction = UIContextualAction(style: .destructive, title: "删除") { [weak self] (_, _, completion) in
+                guard let self = self else { return }
+                
+                Task {
+                    do {
+                        try await self.musicLibraryService.removeFromPlaylist(item, playlist: self.playlist)
+                        self.refreshPlaylist()
+                    } catch {
+                        await MainActor.run {
+                            self.showAlert(title: "Error", message: "Failed to remove from playlist: \(error.localizedDescription)")
+                        }
+                    }
+                }
+                
+                completion(true)
             }
             
-            completion(true)
+            return UISwipeActionsConfiguration(actions: [removeAction])
         }
-        
-        return UISwipeActionsConfiguration(actions: [removeAction])
     }
 }
 
@@ -227,7 +306,7 @@ extension PlaylistDetailViewController: MusicPickerViewControllerDelegate {
                 refreshPlaylist()
             } catch {
                 await MainActor.run {
-                    showAlert(title: "Error", message: "Failed to add to playlist: \(error.localizedDescription)")
+                    showAlert(title: "错误", message: "添加到专辑失败: \(error.localizedDescription)")
                 }
             }
         }

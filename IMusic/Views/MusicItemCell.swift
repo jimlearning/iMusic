@@ -91,7 +91,7 @@ class MusicItemCell: UITableViewCell {
     
     func configure(with item: MusicItem) {
         titleLabel.text = item.title
-        artistLabel.text = item.artist ?? "Unknown Artist"
+        artistLabel.text = item.artist ?? "未知艺术家"
         durationLabel.text = item.formattedDuration
         
         if let artworkData = item.artworkData, let image = UIImage(data: artworkData) {

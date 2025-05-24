@@ -109,7 +109,7 @@ class PlaylistCollectionViewCell: UICollectionViewCell {
         
         // Get first music item in playlist for artist name and artwork
         if let firstItem = playlist.musicItems.first {
-            artistLabel.text = firstItem.artist ?? "Unknown Artist"
+            artistLabel.text = firstItem.artist ?? "未知艺术家"
             
             if let artworkData = firstItem.artworkData, let image = UIImage(data: artworkData) {
                 imageView.image = image

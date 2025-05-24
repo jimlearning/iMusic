@@ -163,6 +163,15 @@ class NowPlayingViewController: UIViewController {
         return button
     }()
     
+    private lazy var favoriteButton: UIButton = {
+        let button = UIButton(type: .system)
+        button.translatesAutoresizingMaskIntoConstraints = false
+        button.setImage(UIImage(systemName: "heart"), for: .normal)
+        button.tintColor = .systemRed
+        button.addTarget(self, action: #selector(favoriteButtonTapped), for: .touchUpInside)
+        return button
+    }()
+    
     private lazy var playlistButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
@@ -216,6 +225,7 @@ class NowPlayingViewController: UIViewController {
         
         // Add subviews
         view.addSubview(closeButton)
+        view.addSubview(favoriteButton)
         view.addSubview(playlistButton)
         view.addSubview(artworkImageView)
         view.addSubview(titleLabel)
@@ -244,6 +254,11 @@ class NowPlayingViewController: UIViewController {
             playlistButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             playlistButton.widthAnchor.constraint(equalToConstant: 44),
             playlistButton.heightAnchor.constraint(equalToConstant: 44),
+            
+            favoriteButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 16),
+            favoriteButton.trailingAnchor.constraint(equalTo: playlistButton.leadingAnchor, constant: -16),
+            favoriteButton.widthAnchor.constraint(equalToConstant: 44),
+            favoriteButton.heightAnchor.constraint(equalToConstant: 44),
             
             artworkImageView.topAnchor.constraint(equalTo: closeButton.bottomAnchor, constant: 20),
             artworkImageView.centerXAnchor.constraint(equalTo: view.centerXAnchor),
@@ -309,20 +324,47 @@ class NowPlayingViewController: UIViewController {
             volumeMaxImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             volumeMaxImageView.centerYAnchor.constraint(equalTo: volumeSlider.centerYAnchor),
             volumeMaxImageView.widthAnchor.constraint(equalToConstant: 20),
-            volumeMaxImageView.heightAnchor.constraint(equalToConstant: 20)
+        
+            titleLabel.topAnchor.constraint(equalTo: artworkImageView.bottomAnchor, constant: 24),
+            titleLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            titleLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
+            artistLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 8),
+            artistLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            artistLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
+            albumLabel.topAnchor.constraint(equalTo: artistLabel.bottomAnchor, constant: 4),
+            albumLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            albumLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            
+            currentTimeLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            currentTimeLabel.bottomAnchor.constraint(equalTo: timeSlider.topAnchor, constant: -4),
+            
+            totalTimeLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            totalTimeLabel.bottomAnchor.constraint(equalTo: timeSlider.topAnchor, constant: -4),
         ])
     }
     
     private func updateUI() {
-        guard let currentItem = musicPlayerService.currentItem else {
-            dismiss(animated: true)
-            return
-        }
+        // Update track info
+        updateTrackInfo()
+        
+        // Update shuffle and repeat buttons
+        updateShuffleButton()
+        updateRepeatButton()
+        updateFavoriteButton()
+        
+        // Update volume slider
+        volumeSlider.value = musicPlayerService.volume
+    }
+    
+    private func updateTrackInfo() {
+        guard let currentItem = musicPlayerService.currentItem else { return }
         
         // Update labels
         titleLabel.text = currentItem.title
-        artistLabel.text = currentItem.artist ?? "Unknown Artist"
-        albumLabel.text = currentItem.album ?? "Unknown Album"
+        artistLabel.text = currentItem.artist
+        albumLabel.text = currentItem.album
         
         // Update artwork
         if let artworkData = currentItem.artworkData, let image = UIImage(data: artworkData) {
@@ -330,19 +372,6 @@ class NowPlayingViewController: UIViewController {
         } else {
             artworkImageView.image = UIImage.iconDefaultArtwork
         }
-        
-        // Update time labels
-        updateTimeLabels()
-        
-        // Update play/pause button
-        updatePlayPauseButton()
-        
-        // Update shuffle and repeat buttons
-        updateShuffleButton()
-        updateRepeatButton()
-        
-        // Update volume slider
-        volumeSlider.value = musicPlayerService.volume
     }
     
     private func updateTimeLabels() {
@@ -380,6 +409,15 @@ class NowPlayingViewController: UIViewController {
             repeatButton.tintColor = .appPrimary
         }
     }
+
+    
+    private func updateFavoriteButton() {
+        guard let currentItem = musicPlayerService.currentItem else { return }
+        
+        let heartImageName = currentItem.isFavorite ? "heart.fill" : "heart"
+        favoriteButton.setImage(UIImage(systemName: heartImageName), for: .normal)
+        favoriteButton.tintColor = currentItem.isFavorite ? .systemRed : .label
+    }
     
     private func startUpdateTimer() {
         stopUpdateTimer()
@@ -399,6 +437,28 @@ class NowPlayingViewController: UIViewController {
     
     @objc private func closeButtonTapped() {
         dismiss(animated: true)
+    }
+    
+    @objc private func favoriteButtonTapped() {
+        guard let currentItem = musicPlayerService.currentItem else { return }
+        
+        Task {
+            do {
+                // Toggle favorite status
+                let updatedItem = try await musicLibraryService.toggleFavorite(currentItem)
+                
+                // Update the current item in the music player service
+                await MainActor.run {
+                    // Update the current item with the toggled favorite status
+                    musicPlayerService.updateCurrentItemFavoriteStatus(updatedItem.isFavorite)
+                    
+                    // Update the UI to reflect the new favorite status
+                    updateFavoriteButton()
+                }
+            } catch {
+                print("Error toggling favorite: \(error)")
+            }
+        }
     }
     
     @objc private func playlistButtonTapped() {

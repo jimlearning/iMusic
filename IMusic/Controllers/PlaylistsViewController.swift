@@ -97,7 +97,7 @@ class PlaylistsViewController: UIViewController, MiniPlayerUpdatable {
     // MARK: - UI Setup
         
     private func setupNavigationBar() {
-        title = "Playlists"
+        title = "专辑"
         
         navigationController?.navigationBar.prefersLargeTitles = true
         
@@ -169,10 +169,10 @@ class PlaylistsViewController: UIViewController, MiniPlayerUpdatable {
     // MARK: - Actions
     
     @objc private func createPlaylistTapped() {
-        showTextInputAlert(
-            title: "New Playlist",
-            message: "Enter a name for your new playlist",
-            placeholder: "Playlist Name"
+        self.showTextInputAlert(
+            title: "创建专辑",
+            message: "请输入新的专辑名称",
+            placeholder: "专辑名称"
         ) { [weak self] name in
             guard let self = self else { return }
             
@@ -187,7 +187,7 @@ class PlaylistsViewController: UIViewController, MiniPlayerUpdatable {
                     }
                 } catch {
                     await MainActor.run {
-                        self.showAlert(title: "Error", message: "Failed to create playlist: \(error.localizedDescription)")
+                        self.showAlert(title: "错误", message: "创建专辑失败: \(error.localizedDescription)")
                     }
                 }
             }
@@ -231,8 +231,29 @@ extension PlaylistsViewController: UITableViewDelegate, UITableViewDataSource {
         navigationController?.pushViewController(playlistDetailVC, animated: true)
     }
     
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let playlist = playlists[indexPath.row]
+        
+        // For playlists, we'll add a "Play" action that starts playing the playlist
+        let playAction = UIContextualAction(style: .normal, title: "Play") { [weak self] (_, _, completion) in
+            guard let self = self else { return }
+            
+            if !playlist.musicItems.isEmpty {
+                self.musicPlayerService.setQueue(playlist.musicItems)
+                self.musicPlayerService.play()
+            }
+            
+            completion(true)
+        }
+        
+        playAction.backgroundColor = .systemGreen
+        playAction.image = UIImage(systemName: "play.fill")
+        
+        return UISwipeActionsConfiguration(actions: [playAction])
+    }
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, completion) in
+        let deleteAction = UIContextualAction(style: .destructive, title: "删除") { [weak self] (_, _, completion) in
             guard let self = self else { return }
             
             let playlist = self.playlists[indexPath.row]
@@ -262,16 +283,15 @@ extension PlaylistsViewController: UITableViewDelegate, UITableViewDataSource {
             completion(true)
         }
         
-        let renameAction = UIContextualAction(style: .normal, title: "Rename") { [weak self] (_, _, completion) in
+        let renameAction = UIContextualAction(style: .normal, title: "重命名") { [weak self] (_, _, completion) in
             guard let self = self else { return }
             
             let playlist = self.playlists[indexPath.row]
             
             self.showTextInputAlert(
-                title: "Rename Playlist",
-                message: "Enter a new name for this playlist",
-                placeholder: "Playlist Name",
-                initialText: playlist.name
+                title: "创建专辑",
+                message: "请输入新的专辑名称",
+                placeholder: "专辑名称"
             ) { newName in
                 Task {
                     do {
@@ -283,7 +303,7 @@ extension PlaylistsViewController: UITableViewDelegate, UITableViewDataSource {
                         }
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "Error", message: "Failed to rename playlist: \(error.localizedDescription)")
+                            self.showAlert(title: "错误", message: "创建专辑失败: \(error.localizedDescription)")
                         }
                     }
                 }

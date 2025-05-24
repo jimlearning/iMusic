@@ -117,7 +117,7 @@ class MiniPlayerView: UIView {
     
     func configure(with item: MusicItem, playbackState: PlaybackState) {
         titleLabel.text = item.title
-        artistLabel.text = item.artist ?? "Unknown Artist"
+        artistLabel.text = item.artist ?? "未知艺术家"
         
         if let artworkData = item.artworkData, let image = UIImage(data: artworkData) {
             artworkImageView.image = image

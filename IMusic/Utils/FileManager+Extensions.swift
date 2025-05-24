@@ -15,7 +15,7 @@ extension FileManager {
     }
     
     func getFormattedFileSize(for url: URL) -> String {
-        guard let size = getFileSize(for: url) else { return "Unknown" }
+        guard let size = getFileSize(for: url) else { return "未知" }
         
         let formatter = ByteCountFormatter()
         formatter.allowedUnits = [.useKB, .useMB, .useGB]

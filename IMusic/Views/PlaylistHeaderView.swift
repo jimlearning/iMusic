@@ -44,7 +44,7 @@ class PlaylistHeaderView: UIView {
     let playAllButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Play All", for: .normal)
+        button.setTitle("全部播放", for: .normal)
         button.setImage(UIImage.playIcon, for: .normal)
         button.tintColor = .white
         button.backgroundColor = .appPrimary
@@ -57,7 +57,7 @@ class PlaylistHeaderView: UIView {
     let shuffleButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Shuffle", for: .normal)
+        button.setTitle("随机播放", for: .normal)
         button.setImage(UIImage.shuffleIcon, for: .normal)
         button.tintColor = .appPrimary
         button.backgroundColor = .systemGray6
@@ -128,9 +128,9 @@ class PlaylistHeaderView: UIView {
         nameLabel.text = playlist.name
         
         let count = playlist.count
-        infoLabel.text = "\(count) \(count == 1 ? "song" : "songs"), \(playlist.formattedTotalDuration)"
+        infoLabel.text = "共 \(count) 首, 总时长 \(playlist.formattedTotalDuration)"
         
-        dateLabel.text = "Created on \(playlist.dateCreated.formatAsDateString())"
+        dateLabel.text = "创建于 \(playlist.dateCreated.formatAsDateString())"
         
         // Disable buttons if playlist is empty
         let isEmpty = playlist.musicItems.isEmpty

@@ -245,6 +245,17 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
         }
     }
     
+    func updateCurrentItemFavoriteStatus(_ isFavorite: Bool) {
+        guard var item = currentItem else { return }
+        
+        // Update the favorite status of the current item
+        item.isFavorite = isFavorite
+        currentItem = item
+        
+        // Notify that the current item has been updated
+        NotificationCenter.default.post(name: MusicPlayerService.trackChangedNotification, object: nil)
+    }
+    
     // MARK: - Private Methods
     
     private func loadAndPlay(item: MusicItem) {

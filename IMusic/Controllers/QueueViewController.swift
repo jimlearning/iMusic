@@ -127,8 +127,38 @@ extension QueueViewController: UITableViewDelegate, UITableViewDataSource {
         tableView.reloadData()
     }
     
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let item = queue[indexPath.row]
+        
+        let favoriteAction = UIContextualAction(style: .normal, title: item.isFavorite ? "取消收藏" : "收藏") { [weak self] (_, _, completion) in
+            guard let self = self else { return }
+            
+            Task {
+                do {
+                    let updatedItem = try await self.musicLibraryService.toggleFavorite(item)
+                    await MainActor.run {
+                        // Update the item in the queue
+                        if let _ = self.musicPlayerService.queue.firstIndex(where: { $0.id == updatedItem.id }) {
+                            // We need to reload the queue since the musicPlayerService queue was updated
+                            self.loadQueue()
+                        }
+                    }
+                } catch {
+                    print("Error toggling favorite: \(error)")
+                }
+            }
+            
+            completion(true)
+        }
+        
+        favoriteAction.backgroundColor = item.isFavorite ? .systemGray : .systemRed
+        favoriteAction.image = UIImage(systemName: item.isFavorite ? "heart.slash.fill" : "heart.fill")
+        
+        return UISwipeActionsConfiguration(actions: [favoriteAction])
+    }
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let removeAction = UIContextualAction(style: .destructive, title: "Remove") { [weak self] (_, _, completion) in
+        let removeAction = UIContextualAction(style: .destructive, title: "删除") { [weak self] (_, _, completion) in
             guard let self = self else { return }
             
             self.musicPlayerService.removeFromQueue(at: indexPath.row)

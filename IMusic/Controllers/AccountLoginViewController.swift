@@ -6,7 +6,7 @@ class AccountLoginViewController: UIViewController {
     var musicLibraryService: MusicLibraryService!
     var musicPlayerService: MusicPlayerService!
     
-    let defaultUsername = "1234567890"
+    let defaultUsername = "220812"
     let defaultPassword = "ABCDEFGHIJKLMN"
     
     // MARK: - UI Components

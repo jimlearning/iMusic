@@ -75,15 +75,15 @@ class PlaylistCell: UITableViewCell {
             
             nameLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 12),
             nameLabel.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 14),
-            nameLabel.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -8),
+            nameLabel.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -12),
             
             countLabel.leadingAnchor.constraint(equalTo: iconImageView.trailingAnchor, constant: 12),
             countLabel.topAnchor.constraint(equalTo: nameLabel.bottomAnchor, constant: 4),
-            countLabel.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -8),
+            countLabel.trailingAnchor.constraint(equalTo: dateLabel.leadingAnchor, constant: -12),
             
             dateLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -16),
             dateLabel.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14),
-            dateLabel.widthAnchor.constraint(equalToConstant: 80)
+            dateLabel.widthAnchor.constraint(equalToConstant: 120)
         ])
     }
     
@@ -93,7 +93,7 @@ class PlaylistCell: UITableViewCell {
         nameLabel.text = playlist.name
         
         let count = playlist.count
-        countLabel.text = "\(count) \(count == 1 ? "song" : "songs"), \(playlist.formattedTotalDuration)"
+        countLabel.text = "共 \(count) 首, 总时长 \(playlist.formattedTotalDuration)"
         
         dateLabel.text = playlist.dateCreated.formatAsDateString()
         

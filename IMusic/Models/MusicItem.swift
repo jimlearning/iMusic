@@ -4,7 +4,7 @@ import UIKit
 struct MusicItem: Codable, Identifiable, Equatable {
     // Define coding keys to ensure consistent encoding/decoding
     private enum CodingKeys: String, CodingKey {
-        case id, title, artist, album, duration, filePath, artworkData, dateAdded
+        case id, title, artist, album, duration, filePath, artworkData, dateAdded, isFavorite
     }
     let id: UUID
     let title: String
@@ -14,6 +14,7 @@ struct MusicItem: Codable, Identifiable, Equatable {
     let filePath: String // Relative path to the file
     let artworkData: Data?
     let dateAdded: Date
+    var isFavorite: Bool
     
     var formattedDuration: String {
         let minutes = Int(duration) / 60
@@ -25,7 +26,7 @@ struct MusicItem: Codable, Identifiable, Equatable {
         return lhs.id == rhs.id
     }
     
-    init(id: UUID = UUID(), title: String, artist: String? = nil, album: String? = nil, duration: Double, filePath: String, artworkData: Data? = nil, dateAdded: Date = Date()) {
+    init(id: UUID = UUID(), title: String, artist: String? = nil, album: String? = nil, duration: Double, filePath: String, artworkData: Data? = nil, dateAdded: Date = Date(), isFavorite: Bool = false) {
         self.id = id
         self.title = title
         self.artist = artist
@@ -34,5 +35,6 @@ struct MusicItem: Codable, Identifiable, Equatable {
         self.filePath = filePath
         self.artworkData = artworkData
         self.dateAdded = dateAdded
+        self.isFavorite = isFavorite
     }
 }

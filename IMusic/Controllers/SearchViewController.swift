@@ -13,7 +13,7 @@ class SearchViewController: UIViewController, MiniPlayerUpdatable {
         let controller = UISearchController(searchResultsController: nil)
         controller.searchResultsUpdater = self
         controller.obscuresBackgroundDuringPresentation = false
-        controller.searchBar.placeholder = "Search music by title, artist, or album"
+        controller.searchBar.placeholder = "根据标题，艺术家，专辑搜索音乐"
         return controller
     }()
     
@@ -214,8 +214,38 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         updateMiniPlayerView()
     }
     
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let item = searchResults[indexPath.row]
+        
+        let favoriteAction = UIContextualAction(style: .normal, title: item.isFavorite ? "取消收藏" : "收藏") { [weak self] (_, _, completion) in
+            guard let self = self else { return }
+            
+            Task {
+                do {
+                    let updatedItem = try await self.musicLibraryService.toggleFavorite(item)
+                    await MainActor.run {
+                        // Update the item in the search results if it's still there
+                        if let index = self.searchResults.firstIndex(where: { $0.id == updatedItem.id }) {
+                            self.searchResults[index] = updatedItem
+                        }
+                        tableView.reloadRows(at: [indexPath], with: .automatic)
+                    }
+                } catch {
+                    print("Error toggling favorite: \(error)")
+                }
+            }
+            
+            completion(true)
+        }
+        
+        favoriteAction.backgroundColor = item.isFavorite ? .systemGray : .systemRed
+        favoriteAction.image = UIImage(systemName: item.isFavorite ? "heart.slash.fill" : "heart.fill")
+        
+        return UISwipeActionsConfiguration(actions: [favoriteAction])
+    }
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let addToPlaylistAction = UIContextualAction(style: .normal, title: "Add to Playlist") { [weak self] (_, _, completion) in
+        let addToPlaylistAction = UIContextualAction(style: .normal, title: "添加到专辑") { [weak self] (_, _, completion) in
             guard let self = self else { return }
             
             let item = self.searchResults[indexPath.row]
@@ -230,7 +260,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     private func showAddToPlaylistOptions(for item: MusicItem) {
-        let alertController = UIAlertController(title: "Add to Playlist", message: nil, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: "添加到专辑", message: nil, preferredStyle: .actionSheet)
         
         // Add to existing playlists
         for playlist in musicLibraryService.playlists {
@@ -242,7 +272,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
                         try await self.musicLibraryService.addToPlaylist(item, playlist: playlist)
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "Error", message: "Failed to add to playlist: \(error.localizedDescription)")
+                            self.showAlert(title: "错误", message: "添加到专辑失败: \(error.localizedDescription)")
                         }
                     }
                 }
@@ -254,9 +284,9 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
             guard let self = self else { return }
             
             self.showTextInputAlert(
-                title: "New Playlist",
-                message: "Enter a name for your new playlist",
-                placeholder: "Playlist Name"
+                title: "创建专辑",
+                message: "请输入新的专辑名称",
+                placeholder: "专辑名称"
             ) { name in
                 Task {
                     do {
@@ -264,14 +294,14 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
                         try await self.musicLibraryService.addToPlaylist(item, playlist: newPlaylist)
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "Error", message: "Failed to create playlist: \(error.localizedDescription)")
+                            self.showAlert(title: "错误", message: "创建专辑失败: \(error.localizedDescription)")
                         }
                     }
                 }
             }
         })
         
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "取消", style: .cancel))
         
         present(alertController, animated: true)
     }

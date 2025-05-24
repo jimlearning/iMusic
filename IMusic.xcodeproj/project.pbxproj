@@ -7,6 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		381510B02DE18B96005BA21B /* MineViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 381510AF2DE18B96005BA21B /* MineViewController.swift */; };
+		381510B92DE1A593005BA21B /* Tyler - The Creator - Darling, I.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 381510B62DE1A593005BA21B /* Tyler - The Creator - Darling, I.mp3 */; };
+		381510BA2DE1A593005BA21B /* Tyler - The Creator - Kali Uchis - See You Again.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 381510B82DE1A593005BA21B /* Tyler - The Creator - Kali Uchis - See You Again.mp3 */; };
+		381510BB2DE1A593005BA21B /* Post Malone - Swae Lee - Sunflower.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 381510B12DE1A593005BA21B /* Post Malone - Swae Lee - Sunflower.mp3 */; };
+		381510BC2DE1A593005BA21B /* SZA - Good Days.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 381510B22DE1A593005BA21B /* SZA - Good Days.mp3 */; };
+		381510BD2DE1A593005BA21B /* Tems - Ice T.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 381510B52DE1A593005BA21B /* Tems - Ice T.mp3 */; };
+		381510BE2DE1A593005BA21B /* SZA - Snooze.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 381510B32DE1A593005BA21B /* SZA - Snooze.mp3 */; };
+		381510BF2DE1A593005BA21B /* Tyler - The Creator - HEAVEN TO ME.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 381510B72DE1A593005BA21B /* Tyler - The Creator - HEAVEN TO ME.mp3 */; };
+		381510C02DE1A593005BA21B /* SZA - Travis Scott - Open Arms.mp3 in Resources */ = {isa = PBXBuildFile; fileRef = 381510B42DE1A593005BA21B /* SZA - Travis Scott - Open Arms.mp3 */; };
 		386956382DDEE24B008CA057 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386956372DDEE24B008CA057 /* AppDelegate.swift */; };
 		3869563A2DDEE24B008CA057 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 386956392DDEE24B008CA057 /* SceneDelegate.swift */; };
 		3869563C2DDEE24B008CA057 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3869563B2DDEE24B008CA057 /* ViewController.swift */; };
@@ -120,6 +129,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		381510AF2DE18B96005BA21B /* MineViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MineViewController.swift; sourceTree = "<group>"; };
+		381510B12DE1A593005BA21B /* Post Malone - Swae Lee - Sunflower.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Post Malone - Swae Lee - Sunflower.mp3"; sourceTree = "<group>"; };
+		381510B22DE1A593005BA21B /* SZA - Good Days.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "SZA - Good Days.mp3"; sourceTree = "<group>"; };
+		381510B32DE1A593005BA21B /* SZA - Snooze.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "SZA - Snooze.mp3"; sourceTree = "<group>"; };
+		381510B42DE1A593005BA21B /* SZA - Travis Scott - Open Arms.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "SZA - Travis Scott - Open Arms.mp3"; sourceTree = "<group>"; };
+		381510B52DE1A593005BA21B /* Tems - Ice T.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Tems - Ice T.mp3"; sourceTree = "<group>"; };
+		381510B62DE1A593005BA21B /* Tyler - The Creator - Darling, I.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Tyler - The Creator - Darling, I.mp3"; sourceTree = "<group>"; };
+		381510B72DE1A593005BA21B /* Tyler - The Creator - HEAVEN TO ME.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Tyler - The Creator - HEAVEN TO ME.mp3"; sourceTree = "<group>"; };
+		381510B82DE1A593005BA21B /* Tyler - The Creator - Kali Uchis - See You Again.mp3 */ = {isa = PBXFileReference; lastKnownFileType = audio.mp3; path = "Tyler - The Creator - Kali Uchis - See You Again.mp3"; sourceTree = "<group>"; };
 		386956342DDEE24B008CA057 /* IMusic.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = IMusic.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		386956372DDEE24B008CA057 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		386956392DDEE24B008CA057 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -314,6 +332,7 @@
 				3869565A2DDF053D008CA057 /* PlaylistsViewController.swift */,
 				3869565B2DDF053D008CA057 /* QueueViewController.swift */,
 				3869565C2DDF053D008CA057 /* SearchViewController.swift */,
+				381510AF2DE18B96005BA21B /* MineViewController.swift */,
 				3869565D2DDF053D008CA057 /* SettingsViewController.swift */,
 			);
 			path = Controllers;
@@ -423,6 +442,14 @@
 				386956B62DE02CD4008CA057 /* What Do You Want For Christmas590.mp3 */,
 				386956C62DE02CD7008CA057 /* Who Took The Candy623.mp3 */,
 				386956C22DE02CD6008CA057 /* Yes, I Can 566.mp3 */,
+				381510B12DE1A593005BA21B /* Post Malone - Swae Lee - Sunflower.mp3 */,
+				381510B22DE1A593005BA21B /* SZA - Good Days.mp3 */,
+				381510B32DE1A593005BA21B /* SZA - Snooze.mp3 */,
+				381510B42DE1A593005BA21B /* SZA - Travis Scott - Open Arms.mp3 */,
+				381510B52DE1A593005BA21B /* Tems - Ice T.mp3 */,
+				381510B62DE1A593005BA21B /* Tyler - The Creator - Darling, I.mp3 */,
+				381510B72DE1A593005BA21B /* Tyler - The Creator - HEAVEN TO ME.mp3 */,
+				381510B82DE1A593005BA21B /* Tyler - The Creator - Kali Uchis - See You Again.mp3 */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -494,6 +521,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				386956DD2DE02CDA008CA057 /* The Bath Song508.mp3 in Resources */,
+				381510B92DE1A593005BA21B /* Tyler - The Creator - Darling, I.mp3 in Resources */,
+				381510BA2DE1A593005BA21B /* Tyler - The Creator - Kali Uchis - See You Again.mp3 in Resources */,
+				381510BB2DE1A593005BA21B /* Post Malone - Swae Lee - Sunflower.mp3 in Resources */,
+				381510BC2DE1A593005BA21B /* SZA - Good Days.mp3 in Resources */,
+				381510BD2DE1A593005BA21B /* Tems - Ice T.mp3 in Resources */,
+				381510BE2DE1A593005BA21B /* SZA - Snooze.mp3 in Resources */,
+				381510BF2DE1A593005BA21B /* Tyler - The Creator - HEAVEN TO ME.mp3 in Resources */,
+				381510C02DE1A593005BA21B /* SZA - Travis Scott - Open Arms.mp3 in Resources */,
 				386956E62DE02CDA008CA057 /* My Teddy Bear573.mp3 in Resources */,
 				386956AF2DDF47B4008CA057 /* 平凡之路-朴树.mp3 in Resources */,
 				386956F12DE02CDA008CA057 /* Uh huh 453.mp3 in Resources */,
@@ -591,6 +626,7 @@
 				3869567A2DDF053D008CA057 /* SettingsViewController.swift in Sources */,
 				3869566E2DDF053D008CA057 /* PlaylistCell.swift in Sources */,
 				3869563C2DDEE24B008CA057 /* ViewController.swift in Sources */,
+				381510B02DE18B96005BA21B /* MineViewController.swift in Sources */,
 				3869567C2DDF053D008CA057 /* FileManager+Extensions.swift in Sources */,
 				386956702DDF053D008CA057 /* SliderTableViewCell.swift in Sources */,
 				386956872DDF3B21008CA057 /* AccountLoginViewController.swift in Sources */,

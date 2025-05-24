@@ -32,12 +32,45 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private func setupAppearance() {
-        // Configure navigation bar appearance
+        // Load theme settings
+        Task {
+            do {
+                let dataProvider = LocalDataProvider()
+                let userSettings = try await dataProvider.getUserSettings()
+                await MainActor.run {
+                    applyTheme(userSettings.themeMode)
+                }
+            } catch {
+                print("Error loading theme settings: \(error)")
+            }
+        }
+        
+        // Setup navigation bar appearance
         if #available(iOS 15.0, *) {
             let appearance = UINavigationBarAppearance()
             appearance.configureWithOpaqueBackground()
+            appearance.backgroundColor = .appBackground
+            appearance.titleTextAttributes = [.foregroundColor: UIColor.label]
+            appearance.largeTitleTextAttributes = [.foregroundColor: UIColor.label]
+            
             UINavigationBar.appearance().standardAppearance = appearance
             UINavigationBar.appearance().scrollEdgeAppearance = appearance
+        }
+        
+        // Setup UISearchBar appearance - localize the cancel button
+        UISearchBar.setupAppearance()
+    }
+    
+    private func applyTheme(_ themeMode: ThemeMode) {
+        let window = UIApplication.shared.windows.first
+        
+        switch themeMode {
+        case .light:
+            window?.overrideUserInterfaceStyle = .light
+        case .dark:
+            window?.overrideUserInterfaceStyle = .dark
+        case .system:
+            window?.overrideUserInterfaceStyle = .unspecified
         }
     }
 

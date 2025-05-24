@@ -1,5 +1,5 @@
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 
 // This class handles the creation and management of default playlists
 class DefaultPlaylistsManager {
@@ -24,6 +24,8 @@ class DefaultPlaylistsManager {
     private static let nurseryRhymesPlaylist = "儿童歌谣"
     private static let animalSongsPlaylist = "动物歌曲"
     private static let farmSongsPlaylist = "农场歌曲"
+    private static let saySingPlaylist = "说唱音乐"
+    private static let rAndBPlaylist = "R&B"
     
     // Sleep category
     private static let lullabiesPlaylist = "摇篮曲"
@@ -51,6 +53,20 @@ class DefaultPlaylistsManager {
         "千千阙歌-陈慧娴.flac",
         "春天里-汪峰.flac",
         "人间烟火-程响.flac",
+    ]
+    
+    private static let saySingMusic = [
+        "Post Malone - Swae Lee - Sunflower.mp3",
+        "Tyler - The Creator - Darling, I.mp3",
+        "Tyler - The Creator - HEAVEN TO ME.mp3",
+        "Tyler - The Creator - Kali Uchis - See You Again.mp3",
+    ]
+    
+    private static let rAndBMusic = [
+        "SZA - Snooze.mp3",
+        "SZA - Travis Scott - Open Arms.mp3",
+        "SZA - Good Days.mp3",
+        "Tems - Ice T.mp3",
     ]
     
     private static let englishPopMusic = [
@@ -247,6 +263,18 @@ class DefaultPlaylistsManager {
                                      allMusicItems: musicItems,
                                      musicLibraryService: musicLibraryService)
         
+        await createCategoryPlaylist(name: saySingPlaylist,
+                                     category: recommendedCategory,
+                                     musicFiles: saySingMusic,
+                                     allMusicItems: musicItems,
+                                     musicLibraryService: musicLibraryService)
+        
+        await createCategoryPlaylist(name: rAndBPlaylist,
+                                     category: recommendedCategory,
+                                     musicFiles: rAndBMusic,
+                                     allMusicItems: musicItems,
+                                     musicLibraryService: musicLibraryService)
+        
         await createCategoryPlaylist(name: englishPopPlaylist, 
                                      category: recommendedCategory,
                                      musicFiles: englishPopMusic, 
@@ -256,18 +284,6 @@ class DefaultPlaylistsManager {
         await createCategoryPlaylist(name: nurseryRhymesPlaylist, 
                                      category: recommendedCategory,
                                      musicFiles: nurseryRhymesMusic, 
-                                     allMusicItems: musicItems,
-                                     musicLibraryService: musicLibraryService)
-        
-        await createCategoryPlaylist(name: animalSongsPlaylist, 
-                                     category: recommendedCategory,
-                                     musicFiles: animalSongsMusic, 
-                                     allMusicItems: musicItems,
-                                     musicLibraryService: musicLibraryService)
-        
-        await createCategoryPlaylist(name: farmSongsPlaylist, 
-                                     category: recommendedCategory,
-                                     musicFiles: farmSongsMusic, 
                                      allMusicItems: musicItems,
                                      musicLibraryService: musicLibraryService)
         
@@ -295,6 +311,12 @@ class DefaultPlaylistsManager {
                                      musicFiles: gentleSongsMusic, 
                                      allMusicItems: musicItems,
                                      musicLibraryService: musicLibraryService)
+
+        await createCategoryPlaylist(name: animalSongsPlaylist, 
+                                     category: sleepCategory,
+                                     musicFiles: animalSongsMusic,
+                                     allMusicItems: musicItems,
+                                     musicLibraryService: musicLibraryService)
         
         // Create relax category playlists
         await createCategoryPlaylist(name: meditationPlaylist, 
@@ -318,6 +340,12 @@ class DefaultPlaylistsManager {
         await createCategoryPlaylist(name: shapeSongsPlaylist, 
                                      category: relaxCategory,
                                      musicFiles: shapeSongsMusic, 
+                                     allMusicItems: musicItems,
+                                     musicLibraryService: musicLibraryService)
+                                             
+        await createCategoryPlaylist(name: farmSongsPlaylist, 
+                                     category: relaxCategory,
+                                     musicFiles: farmSongsMusic,
                                      allMusicItems: musicItems,
                                      musicLibraryService: musicLibraryService)
         
@@ -380,7 +408,7 @@ class DefaultPlaylistsManager {
         let allMusicFiles = chinesePopMusic + englishPopMusic + nurseryRhymesMusic + animalSongsMusic + farmSongsMusic +
                           lullabiesMusic + bedtimeMusic + christmasMusic + gentleSongsMusic +
                           meditationMusic + natureMusic + goodbyeSongsMusic + shapeSongsMusic +
-                          studyMusic + workoutMusic + alphabetMusic + countingMusic
+                          studyMusic + workoutMusic + alphabetMusic + countingMusic + saySingMusic + rAndBMusic
         
         // Create basic music items with minimal information for fast loading
         for musicFile in allMusicFiles {
@@ -391,8 +419,8 @@ class DefaultPlaylistsManager {
             let musicItem = MusicItem(
                 id: UUID(),
                 title: fileNameWithoutExt,
-                artist: "Loading...",
-                album: "Loading...",
+                artist: "加载中...",
+                album: "加载中...",
                 duration: 180.0, // Default 3 minutes
                 filePath: fileName,
                 artworkData: nil
@@ -427,7 +455,7 @@ class DefaultPlaylistsManager {
         
         for item in items {
             // Skip items that already have complete metadata
-            if item.artist != "Loading..." && item.artist != "Unknown Artist" && item.artworkData != nil {
+            if item.artist != "加载中..." && item.artist != "未知艺术家" && item.artworkData != nil {
                 continue
             }
             
@@ -473,8 +501,8 @@ class DefaultPlaylistsManager {
                     let updatedItem = MusicItem(
                         id: item.id, // Keep the same ID
                         title: metadata.title ?? fileNameWithoutExt,
-                        artist: metadata.artist ?? "Unknown Artist",
-                        album: metadata.album ?? "Unknown Album",
+                        artist: metadata.artist ?? "未知艺术家",
+                        album: metadata.album ?? "未知专辑",
                         duration: metadata.duration,
                         filePath: fileName,
                         artworkData: metadata.artworkData
@@ -488,8 +516,8 @@ class DefaultPlaylistsManager {
                     let updatedItem = MusicItem(
                         id: item.id, // Keep the same ID
                         title: item.title,
-                        artist: "Unknown Artist",
-                        album: "Unknown Album",
+                        artist: "未知艺术家",
+                        album: "未知专辑",
                         duration: 180.0,
                         filePath: fileName,
                         artworkData: nil
@@ -502,8 +530,8 @@ class DefaultPlaylistsManager {
                 let updatedItem = MusicItem(
                     id: item.id, // Keep the same ID
                     title: item.title,
-                    artist: "Unknown Artist",
-                    album: "Unknown Album",
+                    artist: "未知艺术家",
+                    album: "未知专辑",
                     duration: 180.0,
                     filePath: item.filePath,
                     artworkData: nil
@@ -672,7 +700,7 @@ class DefaultPlaylistsManager {
         let duration = asset.duration.seconds
         
         // Load metadata asynchronously using older API
-        return await withCheckedContinuation { continuation in
+        return await withCheckedContinuation { [asset] continuation in
             asset.loadValuesAsynchronously(forKeys: ["duration", "commonMetadata"]) {
                 var title: String?
                 var artist: String?

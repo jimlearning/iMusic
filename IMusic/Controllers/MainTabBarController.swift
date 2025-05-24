@@ -70,23 +70,23 @@ class MainTabBarController: UITabBarController {
         libraryVC.musicLibraryService = musicLibraryService
         libraryVC.musicPlayerService = musicPlayerService
         let libraryNav = UINavigationController(rootViewController: libraryVC)
-        libraryNav.tabBarItem = UITabBarItem(title: "Library", image: UIImage(systemName: "music.note"), tag: 1)
+        libraryNav.tabBarItem = UITabBarItem(title: "曲库", image: UIImage(systemName: "music.note"), tag: 1)
         
         // Playlists View Controller
         let playlistsVC = PlaylistsViewController()
         playlistsVC.musicLibraryService = musicLibraryService
         playlistsVC.musicPlayerService = musicPlayerService
         let playlistsNav = UINavigationController(rootViewController: playlistsVC)
-        playlistsNav.tabBarItem = UITabBarItem(title: "Playlists", image: UIImage(systemName: "music.note.list"), tag: 2)
+        playlistsNav.tabBarItem = UITabBarItem(title: "专辑", image: UIImage(systemName: "music.note.list"), tag: 2)
 
-        // Settings View Controller
-        let settingsVC = SettingsViewController()
-        settingsVC.musicLibraryService = musicLibraryService
-        settingsVC.musicPlayerService = musicPlayerService
-        let settingsNav = UINavigationController(rootViewController: settingsVC)
-        settingsNav.tabBarItem = UITabBarItem(title: "Mine", image: UIImage(systemName: "person"), tag: 4)
+        // Mine View Controller
+        let mineVC = MineViewController()
+        mineVC.musicLibraryService = musicLibraryService
+        mineVC.musicPlayerService = musicPlayerService
+        let mineNav = UINavigationController(rootViewController: mineVC)
+        mineNav.tabBarItem = UITabBarItem(title: "我", image: UIImage(systemName: "person"), tag: 4)
         
         // Set the view controllers
-        viewControllers = [homeNav, libraryNav, playlistsNav, settingsNav]
+        viewControllers = [homeNav, libraryNav, playlistsNav, mineNav]
     }
 }

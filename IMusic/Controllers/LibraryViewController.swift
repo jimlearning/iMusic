@@ -38,13 +38,13 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Your music library is empty"
+        label.text = "您的音乐库是空的"
         label.textColor = .appSubtext
         label.font = UIFont.systemFont(ofSize: 18)
         
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Import Music", for: .normal)
+        button.setTitle("导入音乐", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.addTarget(self, action: #selector(importMusicTapped), for: .touchUpInside)
         
@@ -99,7 +99,7 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
     // MARK: - UI Setup
 
     private func setupNavigationBar() {
-        title = "Library"
+        title = "曲库"
         
         navigationController?.navigationBar.prefersLargeTitles = true
         
@@ -111,7 +111,7 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search Music"
+        searchController.searchBar.placeholder = "搜索音乐"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
@@ -187,7 +187,7 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
     }
     
     @objc private func sortButtonTapped() {
-        let alertController = UIAlertController(title: "Sort By", message: nil, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: "排序", message: nil, preferredStyle: .actionSheet)
         
         for option in SortOption.allCases {
             alertController.addAction(UIAlertAction(title: option.rawValue, style: .default) { [weak self] _ in
@@ -195,7 +195,7 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
             })
         }
         
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "取消", style: .cancel))
         
         if let popoverController = alertController.popoverPresentationController {
             popoverController.barButtonItem = navigationItem.rightBarButtonItems?[1]
@@ -259,15 +259,49 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
         updateMiniPlayerView()
     }
     
+    func tableView(_ tableView: UITableView, leadingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        let items = isFiltering ? filteredMusicItems : musicItems
+        let item = items[indexPath.row]
+        
+        let favoriteAction = UIContextualAction(style: .normal, title: item.isFavorite ? "取消收藏" : "收藏") { [weak self] (_, _, completion) in
+            guard let self = self else { return }
+            
+            Task {
+                do {
+                    let updatedItem = try await self.musicLibraryService.toggleFavorite(item)
+                    await MainActor.run {
+                        // Update the item in the list
+                        if let index = self.musicItems.firstIndex(where: { $0.id == updatedItem.id }) {
+                            self.musicItems[index] = updatedItem
+                        }
+                        if self.isFiltering, let index = self.filteredMusicItems.firstIndex(where: { $0.id == updatedItem.id }) {
+                            self.filteredMusicItems[index] = updatedItem
+                        }
+                        tableView.reloadRows(at: [indexPath], with: .automatic)
+                    }
+                } catch {
+                    print("Error toggling favorite: \(error)")
+                }
+            }
+            
+            completion(true)
+        }
+        
+        favoriteAction.backgroundColor = item.isFavorite ? .systemGray : .systemRed
+        favoriteAction.image = UIImage(systemName: item.isFavorite ? "heart.slash.fill" : "heart.fill")
+        
+        return UISwipeActionsConfiguration(actions: [favoriteAction])
+    }
+    
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
-        let deleteAction = UIContextualAction(style: .destructive, title: "Delete") { [weak self] (_, _, completion) in
+        let deleteAction = UIContextualAction(style: .destructive, title: "删除") { [weak self] (_, _, completion) in
             guard let self = self else { return }
             
             let item = self.isFiltering ? self.filteredMusicItems[indexPath.row] : self.musicItems[indexPath.row]
             
             self.showConfirmationAlert(
-                title: "Delete Music",
-                message: "Are you sure you want to delete \(item.title)?",
+                title: "删除音乐",
+                message: "您确定要删除 \(item.title) 吗?",
                 confirmAction: {
                     Task {
                         do {
@@ -293,7 +327,7 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
             completion(true)
         }
         
-        let addToPlaylistAction = UIContextualAction(style: .normal, title: "Add to Playlist") { [weak self] (_, _, completion) in
+        let addToPlaylistAction = UIContextualAction(style: .normal, title: "添加到专辑") { [weak self] (_, _, completion) in
             guard let self = self else { return }
             
             let item = self.isFiltering ? self.filteredMusicItems[indexPath.row] : self.musicItems[indexPath.row]
@@ -309,7 +343,7 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
     }
     
     private func showAddToPlaylistOptions(for item: MusicItem) {
-        let alertController = UIAlertController(title: "Add to Playlist", message: nil, preferredStyle: .actionSheet)
+        let alertController = UIAlertController(title: "添加到专辑", message: nil, preferredStyle: .actionSheet)
         
         // Add to existing playlists
         for playlist in musicLibraryService.playlists {
@@ -321,7 +355,7 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
                         try await self.musicLibraryService.addToPlaylist(item, playlist: playlist)
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "Error", message: "Failed to add to playlist: \(error.localizedDescription)")
+                            self.showAlert(title: "错误", message: "添加到专辑失败: \(error.localizedDescription)")
                         }
                     }
                 }
@@ -329,13 +363,13 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         // Create new playlist option
-        alertController.addAction(UIAlertAction(title: "New Playlist...", style: .default) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: "创建专辑", style: .default) { [weak self] _ in
             guard let self = self else { return }
             
             self.showTextInputAlert(
-                title: "New Playlist",
-                message: "Enter a name for your new playlist",
-                placeholder: "Playlist Name"
+                title: "创建专辑",
+                message: "请输入新的专辑名称",
+                placeholder: "专辑名称"
             ) { name in
                 Task {
                     do {
@@ -343,14 +377,14 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
                         try await self.musicLibraryService.addToPlaylist(item, playlist: newPlaylist)
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "Error", message: "Failed to create playlist: \(error.localizedDescription)")
+                            self.showAlert(title: "错误", message: "创建专辑失败: \(error.localizedDescription)")
                         }
                     }
                 }
             }
         })
         
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "取消", style: .cancel))
         
         present(alertController, animated: true)
     }

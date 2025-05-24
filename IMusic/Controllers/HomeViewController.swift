@@ -70,7 +70,8 @@ class HomeViewController: UIViewController, MiniPlayerUpdatable {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.contentMode = .scaleAspectFill
         imageView.clipsToBounds = true
-        imageView.backgroundColor = .systemPurple
+        imageView.backgroundColor = randomPredefinedColor()
+        imageView.image = UIImage.iconDefaultAlbum
         return imageView
     }()
     

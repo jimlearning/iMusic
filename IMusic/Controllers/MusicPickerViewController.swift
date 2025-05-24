@@ -30,7 +30,7 @@ class MusicPickerViewController: UIViewController {
     private lazy var addButton: UIButton = {
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Add Selected (0)", for: .normal)
+        button.setTitle("添加选定 (0)", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.backgroundColor = .appPrimary
         button.setTitleColor(.white, for: .normal)
@@ -51,7 +51,7 @@ class MusicPickerViewController: UIViewController {
     // MARK: - UI Setup
     
     private func setupUI() {
-        title = "Add to Playlist"
+        title = "添加到专辑"
         view.backgroundColor = .appBackground
         
         view.addSubview(tableView)
@@ -73,7 +73,7 @@ class MusicPickerViewController: UIViewController {
         let searchController = UISearchController(searchResultsController: nil)
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
-        searchController.searchBar.placeholder = "Search Music"
+        searchController.searchBar.placeholder = "搜索音乐"
         navigationItem.searchController = searchController
         navigationItem.hidesSearchBarWhenScrolling = false
     }
@@ -92,7 +92,7 @@ class MusicPickerViewController: UIViewController {
     
     private func updateAddButton() {
         let count = selectedItems.count
-        addButton.setTitle("Add Selected (\(count))", for: .normal)
+        addButton.setTitle("添加选定 (\(count))", for: .normal)
         addButton.isEnabled = count > 0
     }
     

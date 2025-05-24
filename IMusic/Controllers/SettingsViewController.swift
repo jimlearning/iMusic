@@ -30,57 +30,37 @@ class SettingsViewController: UIViewController, MiniPlayerUpdatable {
     // MARK: - Section and Row Types
     
     enum Section: Int, CaseIterable {
-        case playback
+        case appearance
         case library
         case logout
         
         var title: String {
             switch self {
-            case .playback: return "Playback"
-            case .library: return "Library"
-            case .logout: return "Logout"
+            case .appearance: return "外观"
+            case .library: return "曲库"
+            case .logout: return "退出登录"
             }
         }
     }
     
-    enum PlaybackRow: Int, CaseIterable {
-        case volume
-        case equalizer
-        case repeatMode
-        case shuffle
+    enum AppearanceRow: Int, CaseIterable {
+        case theme
         
         var title: String {
             switch self {
-            case .volume: return "Volume"
-            case .equalizer: return "Equalizer"
-            case .repeatMode: return "Repeat Mode"
-            case .shuffle: return "Shuffle"
+            case .theme: return "主题"
             }
         }
     }
     
     enum LibraryRow: Int, CaseIterable {
-        case sortBy
         case clearCache
         case recreatePlaylists
         
         var title: String {
             switch self {
-            case .sortBy: return "Sort By"
-            case .clearCache: return "Clear Cache"
-            case .recreatePlaylists: return "Recreate All Playlists"
-            }
-        }
-    }
-    
-    enum AboutRow: Int, CaseIterable {
-        case version
-        case feedback
-        
-        var title: String {
-            switch self {
-            case .version: return "Version"
-            case .feedback: return "Send Feedback"
+            case .clearCache: return "清除缓存"
+            case .recreatePlaylists: return "重置所有专辑"
             }
         }
     }
@@ -102,13 +82,13 @@ class SettingsViewController: UIViewController, MiniPlayerUpdatable {
     // MARK: - UI Setup
 
     private func setupNavigationBar() {
-        title = "Settings"
+        title = "设置"
         
         navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     private func setupUI() {
-        title = "Settings"
+        title = "设置"
         view.backgroundColor = .appBackground
         
         view.addSubview(tableView)
@@ -167,76 +147,46 @@ class SettingsViewController: UIViewController, MiniPlayerUpdatable {
     
     // MARK: - Actions
     
-    private func showRepeatModeOptions() {
-        let alertController = UIAlertController(title: "Repeat Mode", message: nil, preferredStyle: .actionSheet)
+    private func showThemeOptions() {
+        let alertController = UIAlertController(title: "主题", message: nil, preferredStyle: .actionSheet)
         
-        let modes: [(RepeatMode, String)] = [
-            (.none, "No Repeat"),
-            (.all, "Repeat All"),
-            (.one, "Repeat One")
-        ]
-        
-        for (mode, title) in modes {
-            alertController.addAction(UIAlertAction(title: title, style: .default) { [weak self] _ in
+        for themeMode in ThemeMode.allCases {
+            alertController.addAction(UIAlertAction(title: themeMode.displayName, style: .default) { [weak self] _ in
                 guard let self = self else { return }
-                
-                self.settings?.repeatMode = mode
-                self.musicPlayerService.repeatMode = mode
+                self.settings?.themeMode = themeMode
                 self.saveSettings()
+                self.applyTheme(themeMode)
                 self.tableView.reloadData()
             })
         }
         
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "取消", style: .cancel))
         
         present(alertController, animated: true)
     }
     
-    private func showSortOptions() {
-        let alertController = UIAlertController(title: "Sort Library By", message: nil, preferredStyle: .actionSheet)
+    private func applyTheme(_ themeMode: ThemeMode) {
+        let window = UIApplication.shared.windows.first
         
-        for option in SortOption.allCases {
-            alertController.addAction(UIAlertAction(title: option.rawValue, style: .default) { [weak self] _ in
-                guard let self = self else { return }
-                
-                self.settings?.sortOption = option
-                self.saveSettings()
-                self.tableView.reloadData()
-            })
+        switch themeMode {
+        case .light:
+            window?.overrideUserInterfaceStyle = .light
+        case .dark:
+            window?.overrideUserInterfaceStyle = .dark
+        case .system:
+            window?.overrideUserInterfaceStyle = .unspecified
         }
-        
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        present(alertController, animated: true)
-    }
-    
-    private func showEqualizerOptions() {
-        let alertController = UIAlertController(title: "Equalizer Preset", message: nil, preferredStyle: .actionSheet)
-        
-        for preset in EqualizerPreset.allCases {
-            alertController.addAction(UIAlertAction(title: preset.rawValue, style: .default) { [weak self] _ in
-                guard let self = self else { return }
-                
-                self.settings?.equalizerPreset = preset
-                self.saveSettings()
-                self.tableView.reloadData()
-            })
-        }
-        
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        
-        present(alertController, animated: true)
     }
     
     private func clearCache() {
         showConfirmationAlert(
-            title: "Clear Cache",
-            message: "This will clear all cached data but won't delete your music files. Are you sure?",
+            title: "清除缓存",
+            message: "这将清除所有缓存数据，但不会删除您的音乐文件。你确定吗？",
             confirmAction: {
                 // Clear cached data
                 UserDefaults.standard.removeObject(forKey: "com.imusic.userSettings")
                 
-                self.showAlert(title: "Cache Cleared", message: "All cached data has been cleared.")
+                self.showAlert(title: "缓存已清除", message: "所有缓存数据均已清除。")
                 self.loadSettings()
             }
         )
@@ -254,62 +204,62 @@ class SettingsViewController: UIViewController, MiniPlayerUpdatable {
     ])
 }
     
-private func recreatePlaylists() {
-    showConfirmationAlert(
-        title: "Recreate All Playlists",
-        message: "This will recreate all default playlists based on your music library. Any custom playlists will not be affected. Continue?",
-        confirmAction: {
-            Task {
-                // Show loading indicator
-                let loadingAlert = self.showLoadingAlert(message: "Recreating playlists...")
-                
-                // Recreate playlists
-                await DefaultPlaylistsManager.forceRecreateAllPlaylists(musicLibraryService: self.musicLibraryService)
-                
-                // Dismiss loading indicator
-                await MainActor.run {
-                    loadingAlert.dismiss(animated: true) {
-                        // Show success message
-                        self.showAlert(title: "Success", message: "All playlists have been recreated successfully.")
+    private func recreatePlaylists() {
+        showConfirmationAlert(
+            title: "重置所有专辑",
+            message: "这将根据您的音乐库重新创建所有默认播放列表。自定义的播放列表将被删除。要继续吗？",
+            confirmAction: {
+                Task {
+                    // Show loading indicator
+                    let loadingAlert = self.showLoadingAlert(message: "重新创建播放列表...")
+                    
+                    // Recreate playlists
+                    await DefaultPlaylistsManager.forceRecreateAllPlaylists(musicLibraryService: self.musicLibraryService)
+                    
+                    // Dismiss loading indicator
+                    await MainActor.run {
+                        loadingAlert.dismiss(animated: true) {
+                            // Show success message
+                            self.showAlert(title: "操作成功", message: "已成功重新创建所有播放列表。")
+                        }
                     }
                 }
             }
-        }
-    )
-}
-    
-private func logout() {
-    showConfirmationAlert(
-        title: "Logout",
-        message: "Are you sure you want to logout?",
-        confirmAction: {
-            // Stop music playback
-            self.musicPlayerService.stop()
-            
-            // Clear user login status
-            UserDefaults.standard.set(false, forKey: "com.imusic.userLoggedIn")
-            
-            // Reset music preferences if needed
-            // UserDefaults.standard.set(false, forKey: "hasCompletedMusicPreferences")
-            
-            // Present login screen
-            let loginVC = LoginViewController()
-            loginVC.modalPresentationStyle = .fullScreen
-            self.present(loginVC, animated: true) {
-                // Clear navigation stack
-                self.navigationController?.viewControllers = []
+        )
+    }
+        
+    private func logout() {
+        showConfirmationAlert(
+            title: "退出登录",
+            message: "确定要退出登录吗？",
+            confirmAction: {
+                // Stop music playback
+                self.musicPlayerService.stop()
+                
+                // Clear user login status
+                UserDefaults.standard.set(false, forKey: "com.imusic.userLoggedIn")
+                
+                // Reset music preferences if needed
+                // UserDefaults.standard.set(false, forKey: "hasCompletedMusicPreferences")
+                
+                // Present login screen
+                let loginVC = LoginViewController()
+                loginVC.modalPresentationStyle = .fullScreen
+                self.present(loginVC, animated: true) {
+                    // Clear navigation stack
+                    self.navigationController?.viewControllers = []
+                }
             }
-        }
-    )
-}
-    
-private func showNowPlayingView(for item: MusicItem) {
-    let nowPlayingVC = NowPlayingViewController()
-    nowPlayingVC.musicPlayerService = musicPlayerService
-    nowPlayingVC.musicLibraryService = musicLibraryService
-    nowPlayingVC.modalPresentationStyle = .fullScreen
-    present(nowPlayingVC, animated: true)
-}
+        )
+    }
+        
+    private func showNowPlayingView(for item: MusicItem) {
+        let nowPlayingVC = NowPlayingViewController()
+        nowPlayingVC.musicPlayerService = musicPlayerService
+        nowPlayingVC.musicLibraryService = musicLibraryService
+        nowPlayingVC.modalPresentationStyle = .fullScreen
+        present(nowPlayingVC, animated: true)
+    }
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource
@@ -318,19 +268,33 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         return Section.allCases.count
     }
     
+    func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
+        return UIView()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 20
+    }
+    
+    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+        return UIView()
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return 0
+    }
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         guard let sectionType = Section(rawValue: section) else { return 0 }
         
         switch sectionType {
-        case .playback: return PlaybackRow.allCases.count
-        case .library: return LibraryRow.allCases.count
-        case .logout: return 1
+        case .appearance:
+            return AppearanceRow.allCases.count
+        case .library:
+            return LibraryRow.allCases.count
+        case .logout:
+            return 1
         }
-    }
-    
-    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
-        guard let sectionType = Section(rawValue: section) else { return nil }
-        return sectionType.title
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -339,47 +303,18 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         switch sectionType {
-        case .playback:
-            guard let rowType = PlaybackRow(rawValue: indexPath.row) else {
+        case .appearance:
+            guard let rowType = AppearanceRow(rawValue: indexPath.row) else {
                 return UITableViewCell()
             }
             
             switch rowType {
-            case .volume:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SliderCell", for: indexPath) as! SliderTableViewCell
-                cell.titleLabel.text = rowType.title
-                cell.slider.value = musicPlayerService.volume
-                cell.slider.addTarget(self, action: #selector(volumeChanged(_:)), for: .valueChanged)
-                return cell
-                
-            case .equalizer:
+            case .theme:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
                 cell.textLabel?.text = rowType.title
                 cell.textLabel?.textColor = .label
-                cell.detailTextLabel?.text = settings?.equalizerPreset.rawValue
+                cell.detailTextLabel?.text = settings?.themeMode.displayName ?? "跟随系统"
                 cell.accessoryType = .disclosureIndicator
-                return cell
-                
-            case .repeatMode:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
-                cell.textLabel?.text = rowType.title
-                cell.textLabel?.textColor = .label
-                
-                let repeatMode = settings?.repeatMode ?? .none
-                switch repeatMode {
-                case .none: cell.detailTextLabel?.text = "No Repeat"
-                case .all: cell.detailTextLabel?.text = "Repeat All"
-                case .one: cell.detailTextLabel?.text = "Repeat One"
-                }
-                
-                cell.accessoryType = .disclosureIndicator
-                return cell
-                
-            case .shuffle:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SwitchCell", for: indexPath) as! SwitchTableViewCell
-                cell.titleLabel.text = rowType.title
-                cell.switchControl.isOn = settings?.shuffleEnabled ?? false
-                cell.switchControl.addTarget(self, action: #selector(shuffleToggled(_:)), for: .valueChanged)
                 return cell
             }
             
@@ -389,18 +324,10 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
             }
             
             switch rowType {
-            case .sortBy:
-                let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
-                cell.textLabel?.text = rowType.title
-                cell.textLabel?.textColor = .label
-                cell.detailTextLabel?.text = settings?.sortOption.rawValue
-                cell.accessoryType = .disclosureIndicator
-                return cell
-                
             case .clearCache:
                 let cell = tableView.dequeueReusableCell(withIdentifier: "SettingsCell", for: indexPath)
                 cell.textLabel?.text = rowType.title
-                cell.textLabel?.textColor = .systemRed
+                cell.textLabel?.textColor = .systemBlue
                 return cell
                 
             case .recreatePlaylists:
@@ -425,30 +352,18 @@ extension SettingsViewController: UITableViewDelegate, UITableViewDataSource {
         guard let sectionType = Section(rawValue: indexPath.section) else { return }
         
         switch sectionType {
-        case .playback:
-            guard let rowType = PlaybackRow(rawValue: indexPath.row) else { return }
+        case .appearance:
+            guard let rowType = AppearanceRow(rawValue: indexPath.row) else { return }
             
             switch rowType {
-            case .volume:
-                break // Handled by slider
-                
-            case .equalizer:
-                showEqualizerOptions()
-                
-            case .repeatMode:
-                showRepeatModeOptions()
-                
-            case .shuffle:
-                break // Handled by switch
+            case .theme:
+                showThemeOptions()
             }
             
         case .library:
             guard let rowType = LibraryRow(rawValue: indexPath.row) else { return }
             
             switch rowType {
-            case .sortBy:
-                showSortOptions()
-                
             case .clearCache:
                 clearCache()
                 
@@ -481,8 +396,8 @@ extension SettingsViewController {
     private func showConfirmationAlert(title: String, message: String, confirmAction: @escaping () -> Void) {
         let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
-        alertController.addAction(UIAlertAction(title: "Cancel", style: .cancel))
-        alertController.addAction(UIAlertAction(title: "Confirm", style: .destructive) { _ in
+        alertController.addAction(UIAlertAction(title: "取消", style: .cancel))
+        alertController.addAction(UIAlertAction(title: "确认", style: .destructive) { _ in
             confirmAction()
         })
         

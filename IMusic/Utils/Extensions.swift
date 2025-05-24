@@ -122,11 +122,11 @@ extension UIViewController {
     func showConfirmationAlert(title: String, message: String, confirmAction: @escaping () -> Void, cancelAction: (() -> Void)? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel) { _ in
+        alert.addAction(UIAlertAction(title: "取消", style: .cancel) { _ in
             cancelAction?()
         })
         
-        alert.addAction(UIAlertAction(title: "Confirm", style: .destructive) { _ in
+        alert.addAction(UIAlertAction(title: "确认", style: .destructive) { _ in
             confirmAction()
         })
         
@@ -141,9 +141,9 @@ extension UIViewController {
             textField.text = initialText
         }
         
-        alert.addAction(UIAlertAction(title: "Cancel", style: .cancel))
+        alert.addAction(UIAlertAction(title: "取消", style: .cancel))
         
-        alert.addAction(UIAlertAction(title: "OK", style: .default) { _ in
+        alert.addAction(UIAlertAction(title: "确认", style: .default) { _ in
             if let text = alert.textFields?.first?.text, !text.isEmpty {
                 confirmAction(text)
             }
@@ -178,8 +178,8 @@ extension UITableView {
 extension Date {
     func formatAsDateString() -> String {
         let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .none
+        formatter.locale = Locale(identifier: "zh_CN")
+        formatter.dateFormat = "yyyy年MM月dd日"
         return formatter.string(from: self)
     }
 }
@@ -202,5 +202,26 @@ extension UIView {
     func addBorder(width: CGFloat = 1, color: UIColor = .lightGray) {
         layer.borderWidth = width
         layer.borderColor = color.cgColor
+    }
+}
+
+// MARK: - UISearchBar Extensions
+extension UISearchBar {
+    func setLocalizedCancelButtonTitle() {
+        // Find the cancel button view
+        for subview in self.subviews {
+            for innerView in subview.subviews {
+                if let cancelButton = innerView as? UIButton {
+                    // Set the localized title
+                    cancelButton.setTitle("取消", for: .normal)
+                    return
+                }
+            }
+        }
+    }
+    
+    // Alternative method using UIBarButtonItem appearance
+    static func setupAppearance() {
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).title = "取消"
     }
 }

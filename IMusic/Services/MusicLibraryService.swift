@@ -1,5 +1,5 @@
 import Foundation
-import AVFoundation
+@preconcurrency import AVFoundation
 import UIKit
 
 class MusicLibraryService: ObservableObject {
@@ -219,7 +219,7 @@ class MusicLibraryService: ObservableObject {
         let duration = asset.duration.seconds
         
         // Load metadata asynchronously using older API
-        return await withCheckedContinuation { continuation in
+        return await withCheckedContinuation { [asset] continuation in
             asset.loadValuesAsynchronously(forKeys: ["duration", "commonMetadata"]) {
                 var title: String?
                 var artist: String?
@@ -265,6 +265,44 @@ class MusicLibraryService: ObservableObject {
                 self.playlists[index] = playlist
             }
         }
+    }
+    
+    @discardableResult
+    func toggleFavorite(_ item: MusicItem) async throws -> MusicItem {
+        var music = try await dataProvider.getAllMusic()
+        
+        // Try to find the music item by ID
+        if let index = music.firstIndex(where: { $0.id == item.id }) {
+            var updatedItem = music[index]
+            updatedItem.isFavorite.toggle()
+            music[index] = updatedItem
+            
+            try await dataProvider.saveMusic(music)
+            return updatedItem
+        } 
+        
+        // If not found by ID, try to find by file path
+        if let index = music.firstIndex(where: { $0.filePath == item.filePath }) {
+            var updatedItem = music[index]
+            updatedItem.isFavorite.toggle()
+            music[index] = updatedItem
+            
+            try await dataProvider.saveMusic(music)
+            return updatedItem
+        }
+            
+        // If still not found, add the current item to the music library
+        var newItem = item
+        newItem.isFavorite = true // Directly set as favorite
+        music.append(newItem)
+        
+        try await dataProvider.saveMusic(music)
+        return newItem
+    }
+    
+    func getFavorites() async throws -> [MusicItem] {
+        let music = try await dataProvider.getAllMusic()
+        return music.filter { $0.isFavorite }
     }
     
     @MainActor
