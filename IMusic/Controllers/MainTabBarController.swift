@@ -63,7 +63,7 @@ class MainTabBarController: UITabBarController {
         homeVC.musicLibraryService = musicLibraryService
         homeVC.musicPlayerService = musicPlayerService
         let homeNav = UINavigationController(rootViewController: homeVC)
-        homeNav.tabBarItem = UITabBarItem(title: "Home", image: UIImage(systemName: "house"), tag: 0)
+        homeNav.tabBarItem = UITabBarItem(title: "首页", image: UIImage(systemName: "house"), tag: 0)
         
         // Library View Controller
         let libraryVC = LibraryViewController()

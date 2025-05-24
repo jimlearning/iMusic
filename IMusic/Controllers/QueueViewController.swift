@@ -30,7 +30,7 @@ class QueueViewController: UIViewController {
     // MARK: - UI Setup
     
     private func setupUI() {
-        title = "Current Queue"
+        title = "当前播放队列"
         view.backgroundColor = .appBackground
         
         // Add close button
@@ -42,7 +42,7 @@ class QueueViewController: UIViewController {
         
         // Add clear button
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            title: "Clear",
+            title: "清空",
             style: .plain,
             target: self,
             action: #selector(clearButtonTapped)
@@ -80,8 +80,8 @@ class QueueViewController: UIViewController {
     
     @objc private func clearButtonTapped() {
         showConfirmationAlert(
-            title: "Clear Queue",
-            message: "Are you sure you want to clear the current queue?",
+            title: "清空播放队列",
+            message: "确定要清空当前播放队列吗？",
             confirmAction: {
                 self.musicPlayerService.stop()
                 self.musicPlayerService.setQueue([])

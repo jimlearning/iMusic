@@ -44,7 +44,7 @@ class SearchViewController: UIViewController, MiniPlayerUpdatable {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "Search for music"
+        label.text = "搜索音乐"
         label.textColor = .appSubtext
         label.font = UIFont.systemFont(ofSize: 18)
         
@@ -73,7 +73,7 @@ class SearchViewController: UIViewController, MiniPlayerUpdatable {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "No results found"
+        label.text = "未找到结果"
         label.textColor = .appSubtext
         label.font = UIFont.systemFont(ofSize: 18)
         label.textAlignment = .center
@@ -280,7 +280,7 @@ extension SearchViewController: UITableViewDelegate, UITableViewDataSource {
         }
         
         // Create new playlist option
-        alertController.addAction(UIAlertAction(title: "New Playlist...", style: .default) { [weak self] _ in
+        alertController.addAction(UIAlertAction(title: "创建专辑", style: .default) { [weak self] _ in
             guard let self = self else { return }
             
             self.showTextInputAlert(

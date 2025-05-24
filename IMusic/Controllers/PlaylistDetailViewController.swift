@@ -262,7 +262,7 @@ extension PlaylistDetailViewController: UITableViewDelegate, UITableViewDataSour
                         self.refreshPlaylist()
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "Error", message: "Failed to unfavorite: \(error.localizedDescription)")
+                            self.showAlert(title: "取消收藏失败", message: "取消收藏失败: \(error.localizedDescription)")
                         }
                     }
                 }
@@ -281,7 +281,7 @@ extension PlaylistDetailViewController: UITableViewDelegate, UITableViewDataSour
                         self.refreshPlaylist()
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "Error", message: "Failed to remove from playlist: \(error.localizedDescription)")
+                            self.showAlert(title: "删除专辑失败", message: "删除专辑失败: \(error.localizedDescription)")
                         }
                     }
                 }
@@ -306,7 +306,7 @@ extension PlaylistDetailViewController: MusicPickerViewControllerDelegate {
                 refreshPlaylist()
             } catch {
                 await MainActor.run {
-                    showAlert(title: "错误", message: "添加到专辑失败: \(error.localizedDescription)")
+                    showAlert(title: "添加失败", message: "添加到专辑失败: \(error.localizedDescription)")
                 }
             }
         }

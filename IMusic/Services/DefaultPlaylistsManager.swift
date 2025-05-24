@@ -667,7 +667,7 @@ class DefaultPlaylistsManager {
         let playlist = PlaylistItem(
             id: UUID(),
             name: name,
-            description: "A collection of \(name) music",
+            description: "\(name)专辑",
             musicItems: playlistItems,
             dateCreated: Date(),
             category: category

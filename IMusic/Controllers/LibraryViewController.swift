@@ -340,7 +340,7 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
                             }
                         } catch {
                             await MainActor.run {
-                                self.showAlert(title: "Error", message: "Failed to delete music: \(error.localizedDescription)")
+                                self.showAlert(title: "删除音乐失败", message: "删除音乐失败: \(error.localizedDescription)")
                             }
                         }
                     }
@@ -378,7 +378,7 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
                         try await self.musicLibraryService.addToPlaylist(item, playlist: playlist)
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "错误", message: "添加到专辑失败: \(error.localizedDescription)")
+                            self.showAlert(title: "添加到专辑失败", message: "添加到专辑失败: \(error.localizedDescription)")
                         }
                     }
                 }
@@ -400,7 +400,7 @@ extension LibraryViewController: UITableViewDelegate, UITableViewDataSource {
                         try await self.musicLibraryService.addToPlaylist(item, playlist: newPlaylist)
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "错误", message: "创建专辑失败: \(error.localizedDescription)")
+                            self.showAlert(title: "创建专辑失败", message: "创建专辑失败: \(error.localizedDescription)")
                         }
                     }
                 }
@@ -451,7 +451,7 @@ extension LibraryViewController: UIDocumentPickerDelegate {
             } catch {
                 await MainActor.run {
                     self.activityIndicator.stopAnimating()
-                    self.showAlert(title: "Import Error", message: error.localizedDescription)
+                    self.showAlert(title: "导入音乐失败", message: error.localizedDescription)
                 }
             }
         }

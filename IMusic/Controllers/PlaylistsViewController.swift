@@ -36,13 +36,13 @@ class PlaylistsViewController: UIViewController, MiniPlayerUpdatable {
         
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
-        label.text = "No playlists yet"
+        label.text = "没有专辑"
         label.textColor = .appSubtext
         label.font = UIFont.systemFont(ofSize: 18)
         
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.setTitle("Create Playlist", for: .normal)
+        button.setTitle("创建专辑", for: .normal)
         button.titleLabel?.font = UIFont.systemFont(ofSize: 16, weight: .medium)
         button.addTarget(self, action: #selector(createPlaylistTapped), for: .touchUpInside)
         
@@ -235,7 +235,7 @@ extension PlaylistsViewController: UITableViewDelegate, UITableViewDataSource {
         let playlist = playlists[indexPath.row]
         
         // For playlists, we'll add a "Play" action that starts playing the playlist
-        let playAction = UIContextualAction(style: .normal, title: "Play") { [weak self] (_, _, completion) in
+        let playAction = UIContextualAction(style: .normal, title: "播放") { [weak self] (_, _, completion) in
             guard let self = self else { return }
             
             if !playlist.musicItems.isEmpty {
@@ -259,8 +259,8 @@ extension PlaylistsViewController: UITableViewDelegate, UITableViewDataSource {
             let playlist = self.playlists[indexPath.row]
             
             self.showConfirmationAlert(
-                title: "Delete Playlist",
-                message: "Are you sure you want to delete \(playlist.name)?",
+                title: "删除专辑",
+                message: "确定要删除 \(playlist.name)?",
                 confirmAction: {
                     Task {
                         do {
@@ -273,7 +273,7 @@ extension PlaylistsViewController: UITableViewDelegate, UITableViewDataSource {
                             }
                         } catch {
                             await MainActor.run {
-                                self.showAlert(title: "Error", message: "Failed to delete playlist: \(error.localizedDescription)")
+                                self.showAlert(title: "删除专辑失败", message: "删除专辑失败: \(error.localizedDescription)")
                             }
                         }
                     }
@@ -289,7 +289,7 @@ extension PlaylistsViewController: UITableViewDelegate, UITableViewDataSource {
             let playlist = self.playlists[indexPath.row]
             
             self.showTextInputAlert(
-                title: "创建专辑",
+                title: "重命名专辑",
                 message: "请输入新的专辑名称",
                 placeholder: "专辑名称"
             ) { newName in
@@ -303,7 +303,7 @@ extension PlaylistsViewController: UITableViewDelegate, UITableViewDataSource {
                         }
                     } catch {
                         await MainActor.run {
-                            self.showAlert(title: "错误", message: "创建专辑失败: \(error.localizedDescription)")
+                            self.showAlert(title: "错误", message: "重命名专辑失败: \(error.localizedDescription)")
                         }
                     }
                 }

@@ -119,7 +119,7 @@ class PlaylistCollectionViewCell: UICollectionViewCell {
                 imageView.contentMode = .scaleAspectFit
             }
         } else {
-            artistLabel.text = "Various Artists"
+            artistLabel.text = "合辑"
             setupDefaultImage()
         }
     }

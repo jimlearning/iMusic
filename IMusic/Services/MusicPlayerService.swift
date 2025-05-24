@@ -537,7 +537,7 @@ class MusicPlayerService: NSObject, ObservableObject, AVAudioPlayerDelegate {
             }
         } else {
             handlePlaybackError(NSError(domain: "MusicPlayerService", code: 500, 
-                                       userInfo: [NSLocalizedDescriptionKey: "Playback finished unsuccessfully"]))
+                                       userInfo: [NSLocalizedDescriptionKey: "播放结束"]))
         }
     }
     
