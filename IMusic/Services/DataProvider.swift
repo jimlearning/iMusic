@@ -17,55 +17,59 @@ protocol DataProvider {
 
 class LocalDataProvider: DataProvider {
     private let userDefaults = UserDefaults.standard
-    private let musicKey = "com.imusic.storedMusic"
-    private let playlistsKey = "com.imusic.storedPlaylists"
+
+    private var playlistsDataURL: URL {
+        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return documentsDirectory.appendingPathComponent("playlistsData.json")
+    }
     private let settingsKey = "com.imusic.userSettings"
+
+    private let fileManager = FileManager.default
+    private var musicDataURL: URL {
+        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return documentsDirectory.appendingPathComponent("musicData.json")
+    }
     
     func getAllMusic() async throws -> [MusicItem] {
-        if let data = userDefaults.data(forKey: musicKey) {
-            return try JSONDecoder().decode([MusicItem].self, from: data)
+        if fileManager.fileExists(atPath: musicDataURL.path) {
+            do {
+                let data = try Data(contentsOf: musicDataURL)
+                let items = try JSONDecoder().decode([MusicItem].self, from: data)
+                return items
+            } catch {
+                // If there's an error with the file, try to delete it
+                try? fileManager.removeItem(at: musicDataURL)
+                return []
+            }
         }
+        
         return []
     }
     
     func getPlaylists() async throws -> [PlaylistItem] {
-        if let data = userDefaults.data(forKey: playlistsKey) {
+        if fileManager.fileExists(atPath: playlistsDataURL.path) {
             do {
-                let decoder = JSONDecoder()
-                return try decoder.decode([PlaylistItem].self, from: data)
+                let data = try Data(contentsOf: playlistsDataURL)
+                let playlists = try JSONDecoder().decode([PlaylistItem].self, from: data)
+                return playlists
             } catch {
-                print("Error decoding playlists: \(error)")
-                // If there's an error with the existing data, return an empty array
-                // and clear the corrupted data
-                userDefaults.removeObject(forKey: playlistsKey)
+                // If there's an error with the file, try to delete it
+                try? fileManager.removeItem(at: playlistsDataURL)
                 return []
             }
         }
+        
         return []
     }
     
     func saveMusic(_ items: [MusicItem]) async throws {
         let data = try JSONEncoder().encode(items)
-        userDefaults.set(data, forKey: musicKey)
+        try data.write(to: musicDataURL, options: .atomic)
     }
     
     func savePlaylists(_ playlists: [PlaylistItem]) async throws {
-        do {
-            let encoder = JSONEncoder()
-            let data = try encoder.encode(playlists)
-            userDefaults.set(data, forKey: playlistsKey)
-            print("Successfully saved \(playlists.count) playlists to UserDefaults")
-            
-            // Verify data can be decoded
-            if let savedData = userDefaults.data(forKey: playlistsKey) {
-                let decoder = JSONDecoder()
-                let decodedPlaylists = try decoder.decode([PlaylistItem].self, from: savedData)
-                print("Verification successful: Decoded \(decodedPlaylists.count) playlists")
-            }
-        } catch {
-            print("Error in savePlaylists: \(error)")
-            throw error
-        }
+        let data = try JSONEncoder().encode(playlists)
+        try data.write(to: playlistsDataURL, options: .atomic)
     }
     
     func deleteMusic(_ item: MusicItem) async throws {

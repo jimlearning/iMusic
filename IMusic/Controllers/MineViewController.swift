@@ -201,7 +201,7 @@ extension MineViewController: UITableViewDelegate, UITableViewDataSource {
             cell.imageView?.tintColor = .systemBlue
             
         case 2: // Library
-            cell.textLabel?.text = "曲库"
+            cell.textLabel?.text = "音乐库"
             cell.imageView?.image = UIImage(systemName: "music.note")
             cell.imageView?.tintColor = .systemGreen
             

@@ -37,7 +37,7 @@ class SettingsViewController: UIViewController, MiniPlayerUpdatable {
         var title: String {
             switch self {
             case .appearance: return "外观"
-            case .library: return "曲库"
+            case .library: return "音乐库"
             case .logout: return "退出登录"
             }
         }

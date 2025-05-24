@@ -89,6 +89,18 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
         setupNavigationBar()
         setupUI()
         loadMusicLibrary()
+        
+        // 监听元数据更新完成通知
+        NotificationCenter.default.addObserver(
+            self,
+            selector: #selector(metadataUpdateCompleted),
+            name: DefaultPlaylistsManager.metadataUpdateCompletedNotification,
+            object: nil
+        )
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self)
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -99,8 +111,7 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
     // MARK: - UI Setup
 
     private func setupNavigationBar() {
-        title = "曲库"
-        
+        title = "音乐库"
         navigationController?.navigationBar.prefersLargeTitles = true
         
         let importButton = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(importMusicTapped))
@@ -178,6 +189,18 @@ class LibraryViewController: UIViewController, MiniPlayerUpdatable {
     }
     
     // MARK: - Actions
+    
+    @objc private func metadataUpdateCompleted() {
+        Task {
+            await musicLibraryService.loadData()
+            
+            await MainActor.run {
+                self.musicItems = musicLibraryService.musicItems
+                self.tableView.reloadData()
+                self.updateEmptyState()
+            }
+        }
+    }
     
     @objc private func importMusicTapped() {
         let documentPicker = UIDocumentPickerViewController(documentTypes: ["public.audio"], in: .import)

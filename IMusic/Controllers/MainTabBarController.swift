@@ -70,7 +70,7 @@ class MainTabBarController: UITabBarController {
         libraryVC.musicLibraryService = musicLibraryService
         libraryVC.musicPlayerService = musicPlayerService
         let libraryNav = UINavigationController(rootViewController: libraryVC)
-        libraryNav.tabBarItem = UITabBarItem(title: "曲库", image: UIImage(systemName: "music.note"), tag: 1)
+        libraryNav.tabBarItem = UITabBarItem(title: "音乐库", image: UIImage(systemName: "music.note"), tag: 1)
         
         // Playlists View Controller
         let playlistsVC = PlaylistsViewController()
